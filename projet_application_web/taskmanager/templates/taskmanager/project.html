@@ -26,7 +26,7 @@
   <tbody>
     {% for task in tasks %}
     <tr>
-      <td><a href="#">{{ task.name }}</a></td>
+      <td><a href="/taskmanager/task/{{ task.id }}">{{ task.name }}</a></td>
       <td>{{ task.assignee }}</td>
       <td>{{ task.start_date }}</td>
       <td>{{ task.due_date }}</td>
