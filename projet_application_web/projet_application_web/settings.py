@@ -124,7 +124,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-LOGIN_REDIRECT_URL = '/accounts/profile/'
+LOGIN_REDIRECT_URL = '/taskmanager/projects'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
