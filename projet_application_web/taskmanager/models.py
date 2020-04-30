@@ -17,7 +17,7 @@ class Task(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=500)
-    assignee = models.ForeignKey(User)
+    assignee = models.ForeignKey(User, on_delete=models.CASCADE) # TODO, limit_choices_to=project.members)
     start_date = models.DateField()
     due_date = models.DateField()
     priority = models.IntegerField()

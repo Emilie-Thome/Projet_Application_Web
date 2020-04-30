@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <h1 class="col">{{ project.name }}</h1>
+    <h1 class="col" style="text-align: right">
+      <a href="#" class="btn-block">
+        <span class="glyphicon glyphicon-plus-sign"></span>
+      </a>
+    </h1>
+  </div>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Task</th>
+      <th scope="col">Assignee</th>
+      <th scope="col">Start date</th>
+      <th scope="col">Due date</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td><a href="#">{{ task.name }}</a></td>
+      <td>{{ task.assignee }}</td>
+      <td>{{ task.start_date }}</td>
+      <td>{{ task.due_date }}</td>
+      <td>
+        <a href="#" class="btn-block">
+          <span class="glyphicon glyphicon-edit"></span>
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
