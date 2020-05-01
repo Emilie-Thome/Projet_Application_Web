@@ -6,13 +6,15 @@
   <div class="row">
     <h1 class="col">{{ task.project.name }}</h1>
     <h1 class="col" style="text-align: right">
-      <a href="#" class="btn-block">
+      <a href="/taskmanager/edittask/{{ task.id }}" class="btn-block">
         <span class="glyphicon glyphicon-edit"></span>
       </a>
     </h1>
   </div>
-    <h2>{{ task.name }}</h2>
-    <h3>{{ task.description }}</h3>
+  <div class="row">
+    <h2 class="col">{{ task.name }}</h2>
+    <h3 class="col">{{ task.description }}</h3>
+  </div>
 </div>
 
 <table class="table">

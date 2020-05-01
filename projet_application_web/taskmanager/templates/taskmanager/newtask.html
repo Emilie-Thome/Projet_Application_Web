@@ -1,62 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if envoi %}Votre message a bien été envoyé !{% endif %}
 
-<form action="{% url "newtask" %}" method="post">
+<div class="container">
+  <div class="row">
+      <h1 class="col">{{ task.project.name }}</h1>
+  </div>
+  <div class="row">
+      {% if task %}
+      <h2 class="col">{{ task.name }}</h2>
+      {% endif %}
+  </div>
+</div>
+
+
+<form action="{{ action }}" method="post">
     {% csrf_token %}
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <label for="project">Project</label>
-            <select name="project" id="project" class="form-control">
-                <option value="" selected>---------</option>
-                {% for project in projects %}
-                <option value="{{ project.id }}">{{ project.name }}</option>
-                {% endfor %}}
-            </select>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="name">Name</label>
-            <input name="name" type="text" class="form-control" id="name" placeholder="Name">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <input name="description" type="text" class="form-control" id="description" placeholder="Description">
-    </div>
-    <div class="form-group">
-        <label for="assignee">Assignee</label>
-        <select name="assignee" id="assignee" class="form-control">
-            {% for assignee in assignees %}
-            <option value="{{ assignee.id }}">{{ assignee }}</option>
-            {% endfor %}}
-        </select>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="start_date">Start date :</label>
-            <input name="start_date" type="date" class="form-control" id="start_date">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="due_date">Due date :</label>
-            <input name="due_date" type="date" class="form-control" id="due_date">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="priority">Priority :</label>
-            <input name="priority" type="number" class="form-control" id="priority">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="status">Status :</label>
-            <select name="status" id="status" class="form-control">
-                <option value="" selected>---------</option>
-                {% for status in all_status %}
-                <option value="{{ status.id }}">{{ status.name }}</option>
-                {% endfor %}}
-            </select>
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Add</button>
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
 </form>
 {% endblock %}

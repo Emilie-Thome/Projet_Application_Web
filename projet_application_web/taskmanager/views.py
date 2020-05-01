@@ -1,4 +1,3 @@
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from taskmanager.models import Project, Task, Journal, Status
@@ -23,34 +22,48 @@ def task(request, id):
     journals = Journal.objects.filter(task=task)
     return render(request, 'taskmanager/task.html', {'task' : task, 'journals' : journals})
 
+@login_required(login_url='/accounts/login/')
 def newtask(request):
-    user = request.user
-    projects = Project.objects.filter(members__in = [user])
-    assignees = User.objects.all() #TODO filter by selected project
-    all_status = Status.objects.all()
     if request.method == 'POST':
         form = TaskForm(request.POST or None)
         if form.is_valid():
-            task = Task()
-            task.project = form.cleaned_data["project"]
-            task.name = form.cleaned_data["name"]
-            task.description = form.cleaned_data["description"]
-            task.assignee = form.cleaned_data["assignee"]
-            task.start_date = form.cleaned_data["start_date"]
-            task.due_date = form.cleaned_data["due_date"]
-            task.priority = form.cleaned_data["priority"]
-            task.status = form.cleaned_data["status"]
-            task.save()
-
-            base_url = "task/"  # 1 /products/
-            id = task.id  # 2 category=42
-            url = '{}{}'.format(base_url, id)  # 3 /products/category=42
-            return redirect(url)
+            task = form.save()
+            return redirect('task', id=task.id)
     else:
         form = TaskForm()
+
+    projects = Project.objects.filter(members__in = [request.user])
+    assignees = User.objects.all() #TODO filter by selected project
+    all_status = Status.objects.all()
+    action = "/taskmanager/newtask"
     return render(request, 'taskmanager/newtask.html', {
         'form': form,
         'projects' : projects,
         'assignees' : assignees,
-        'all_status' : all_status
+        'all_status' : all_status,
+        'action' : action
+    })
+
+@login_required(login_url='/accounts/login/')
+def edittask(request, id):
+    task = get_object_or_404(Task, id=id)
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task', id=id)
+    else:
+        form = TaskForm(instance=task)
+
+    projects = Project.objects.filter(members__in=[request.user])
+    assignees = User.objects.all()  # TODO filter by selected project
+    all_status = Status.objects.all()
+    action = "/taskmanager/edittask/{}".format(id)
+    return render(request, 'taskmanager/newtask.html', {
+        'form': form,
+        'projects' : projects,
+        'assignees' : assignees,
+        'all_status' : all_status,
+        'action' : action,
+        'task' : task
     })
