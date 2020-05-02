@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
-{% block content %}
 
+{% block path %}
+<a href="/taskmanager/projects">Projects</a>
+/
+<a href="/taskmanager/project/{{ task.project.id }}">{{ task.project.name }}</a>
+/
+<a href="#">{{ task.name }}</a>
+{% endblock %}
+
+{% block content %}
 <div class="container">
   <div class="row">
     <h1 class="col">{{ task.project.name }}</h1>

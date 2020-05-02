@@ -20,24 +20,28 @@
 
 
 <header>
-  <div class="jumbotron text-center mb-4 ">
+  <div class="jumbotron ">
 
     <!-- Header -->
     {% block header %}
-      <h1 class="display-1">Calend-me</h1>
-      <p class="lead">Here you can plane the future !</p>
-      <hr class="my-4">
+    <h1 class="display-1">Calend-me</h1>
+    <p class="lead">Here you can plane the future !</p>
+    <hr class="my-4">
     {% endblock %}
 
     <!-- User Band -->
     {% block user_band %}
-      <a href="/accounts/logout/" class="btn btn-info btn-lg" style="float: right;">
-        <span class="glyphicon glyphicon-log-out"></span> Log out
-      </a>
+    <a href="/accounts/logout/" class="btn btn-info btn-lg" style="float: right" role="button">
+      <span class="glyphicon glyphicon-log-out"></span> Log out
+    </a>
     {% endblock %}
   </div>
 </header>
 
+<!-- Path -->
+<section class="jumbotron" id="path">
+  {% block path %}{% endblock %}
+</section>
 
 
 <!-- Page Content -->
@@ -48,6 +52,7 @@
 <!-- Footer -->
 <footer>
   {% block footer %}
+  <hr class="my-4">
   {% endblock %}
 </footer>
 
