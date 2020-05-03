@@ -2,48 +2,55 @@
 
 
 {% block path %}
-<a href="/taskmanager/projects">Projects</a>
-/
-<a href="#">{{ project.name }}</a>
+<h5 class="path">
+  <a href="/taskmanager/projects">Projects</a>
+  /
+  <a href="#">{{ project.name }}</a>
+</h5>
 {% endblock %}
 
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <h1 class="col">{{ project.name }}</h1>
-    <h1 class="col-xl-1" style="text-align: right">
-      <a href="/taskmanager/newtask" class="btn-block">
-        <span class="glyphicon glyphicon-plus-sign"></span>
-      </a>
-    </h1>
-  </div>
+<div class="row" style="padding: 0 0">
+    <div class="col">
+      <h1 class="display-2" style="position: relative; float: left;">{{ project.name }}</h1>
+      <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
+        <a href="/taskmanager/newtask" class="btn-block" style="color: #007bff;">
+          <span class="glyphicon glyphicon-plus-sign"></span>
+        </a>
+      </button>
+    </div>
 </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Task</th>
-      <th scope="col">Assignee</th>
-      <th scope="col">Start date</th>
-      <th scope="col">Due date</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for task in tasks %}
-    <tr>
-      <td><a href="/taskmanager/task/{{ task.id }}">{{ task.name }}</a></td>
-      <td>{{ task.assignee }}</td>
-      <td>{{ task.start_date }}</td>
-      <td>{{ task.due_date }}</td>
-      <td>
-        <a href="#" class="btn-block">
-          <span class="glyphicon glyphicon-edit"></span>
-        </a>
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<div class="row">
+    <div class="col">
+      <table class="table">
+        <thead></thead>
+        <thead>
+          <tr>
+            <th scope="col"><h4 class="th">Task</h4></th>
+            <th scope="col"><h4 class="th">Assignee</h4></th>
+            <th scope="col"><h4 class="th">Start date</h4></th>
+            <th scope="col"><h4 class="th">Due date</h4></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+          <tr>
+            <td><h4><a href="/taskmanager/task/{{ task.id }}">{{ task.name }}</a></h4></td>
+            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+            <td><h4 class="date">{{ task.start_date }}</h4></td>
+            <td><h4 class="date">{{ task.due_date }}</h4></td>
+            <td><h4>
+              <a href="#" class="btn-block">
+                <span class="glyphicon glyphicon-edit"></span>
+              </a></h4>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+</div>
 {% endblock %}

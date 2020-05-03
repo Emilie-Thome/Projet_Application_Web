@@ -2,63 +2,56 @@
 
 
 {% block path %}
-<a href="/taskmanager/projects">Projects</a>
-/
-<a href="/taskmanager/project/{{ task.project.id }}">{{ task.project.name }}</a>
-/
-<a href="#">{{ task.name }}</a>
+<h5 class="path">
+  <a href="/taskmanager/projects">Projects</a>
+  /
+  <a href="/taskmanager/project/{{ task.project.id }}">{{ task.project.name }}</a>
+  /
+  <a href="#">{{ task.name }}</a>
+</h5>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <h1 class="col">{{ task.project.name }}</h1>
-    <h1 class="col" style="text-align: right">
-      <a href="/taskmanager/edittask/{{ task.id }}" class="btn-block">
-        <span class="glyphicon glyphicon-edit"></span>
-      </a>
-    </h1>
-  </div>
-  <div class="row">
-    <h2 class="col">{{ task.name }}</h2>
-    <h3 class="col">{{ task.description }}</h3>
-  </div>
-</div>
+
+<h1 class="display-2" >{{ task.project.name }}</h1>
+<button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
+  <a href="/taskmanager/edittask/{{ task.id }}" class="btn-block" style="color: #007bff;">
+    <span class="glyphicon glyphicon-edit"></span>
+  </a>
+</button>
+<h2 class="display-5">{{ task.name }}</h2>
+<h4 class="display-6" style="font-style: italic">{{ task.description }}</h4>
+
 
 <table class="table">
   <tbody>
     <tr>
-      <th scope="col">Assignee</th>
-      <td>{{ task.assignee }}</td>
+      <th scope="col"><h5 class="th">Assignee</h5></th>
+      <td><h6 class="assignee">{{ task.assignee }}</h6></td>
     </tr>
     <tr>
-      <th scope="col">Start date</th>
-      <td>{{ task.start_date }}</td>
+      <th scope="col"><h5 class="th">Start date</h5></th>
+      <td><h5 class="date">{{ task.start_date }}</h5></td>
     </tr>
     <tr>
-      <th scope="col">Due date</th>
-        <td>{{ task.due_date }}</td>
+      <th scope="col"><h5 class="th">Due date</h5></th>
+        <td><h5 class="date">{{ task.due_date }}</h5></td>
     </tr>
     <tr>
-      <th scope="col">Status</th>
-      <td>{{ task.status }}</td>
+      <th scope="col"><h5 class="th">Status</h5></th>
+      <td><h6 class="status">{{ task.status }}</h6></td>
     </tr>
   </tbody>
 </table>
 
-
+<h4 class="display-6" style="font-weight: bold">History</h4>
 <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">History</th>
-    </tr>
-  </thead>
   <tbody>
     {% for journal in journals %}
     <tr>
-      <td>{{ journal.author }}</td>
-      <td>{{ journal.date }}</td>
-      <td>{{ journal.entry }}</td>
+      <td style="white-space: nowrap; width: 1%;"><h6 class="assignee">{{ journal.author }}</h6></td>
+      <td><h5 class="date">{{ journal.date }}</h5></td>
+      <td style="width: 65%;"><h5 class="journal-entry">{{ journal.entry }}</h5></td>
     </tr>
   {% endfor %}
   </tbody>
