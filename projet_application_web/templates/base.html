@@ -7,20 +7,35 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <style>
+    .jumbotron {padding:2rem 2rem;
+      margin:1rem;
+      border-radius:0.5rem;}
+
+    .path {padding:1rem 2rem;
+      margin-left:2rem;
+      margin-right:2rem;
+      background-color:#e9ecef;
+      border-radius:0.5rem;}
+  </style>
+
 </head>
+
+
+
 
 
 <body>
 
 
 <header>
-  <div class="jumbotron ">
+  <div class="jumbotron">
 
     <!-- Header -->
     {% block header %}
@@ -31,17 +46,26 @@
 
     <!-- User Band -->
     {% block user_band %}
-    <a href="/accounts/logout/" class="btn btn-info btn-lg" style="float: right" role="button">
-      <span class="glyphicon glyphicon-log-out"></span> Log out
-    </a>
+     <p class="lead">
+       {% if user.first_name %}
+       Welcome {{ user.first_name }} {{ user.last_name }} !
+       {% else %}
+       Welcome {{ user.username }} !
+       {% endif %}
+       <span>
+         <a href="/accounts/logout/" class="btn btn-info btn-lg" style="float: right" role="button">
+           <span class="glyphicon glyphicon-log-out"></span> Log out
+         </a>
+       </span>
+     </p>
     {% endblock %}
   </div>
 </header>
 
 <!-- Path -->
-<section class="jumbotron" id="path">
+<h5 class="path" id="path">
   {% block path %}{% endblock %}
-</section>
+</h5>
 
 
 <!-- Page Content -->

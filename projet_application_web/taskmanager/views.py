@@ -8,19 +8,26 @@ from django.contrib.auth.models import User
 def projects(request):
     user = request.user
     projects = Project.objects.filter(members__in = [user])
-    return render(request, 'taskmanager/projects.html',{'projects': projects})
+    return render(request, 'taskmanager/projects.html',{'projects': projects,
+                                                        'user' : user})
 
 @login_required(login_url='/accounts/login/')
 def project(request, id):
+    user = request.user
     project = Project.objects.get(id = id)
     tasks = Task.objects.filter(project = project)
-    return render(request, 'taskmanager/project.html', {'project' : project, 'tasks' : tasks})
+    return render(request, 'taskmanager/project.html', {'project' : project,
+                                                        'tasks' : tasks,
+                                                        'user' : user})
 
 @login_required(login_url='/accounts/login/')
 def task(request, id):
+    user = request.user
     task = Task.objects.get(id = id)
     journals = Journal.objects.filter(task=task)
-    return render(request, 'taskmanager/task.html', {'task' : task, 'journals' : journals})
+    return render(request, 'taskmanager/task.html', {'task' : task,
+                                                     'journals' : journals,
+                                                     'user' : user})
 
 @login_required(login_url='/accounts/login/')
 def newtask(request):
@@ -32,17 +39,17 @@ def newtask(request):
     else:
         form = TaskForm()
 
+    user = request.user
     projects = Project.objects.filter(members__in = [request.user])
     assignees = User.objects.all() #TODO filter by selected project
     all_status = Status.objects.all()
     action = "/taskmanager/newtask"
-    return render(request, 'taskmanager/newtask.html', {
-        'form': form,
-        'projects' : projects,
-        'assignees' : assignees,
-        'all_status' : all_status,
-        'action' : action
-    })
+    return render(request, 'taskmanager/newtask.html', {'form': form,
+                                                        'projects' : projects,
+                                                        'assignees' : assignees,
+                                                        'all_status' : all_status,
+                                                        'action' : action,
+                                                        'user' : user})
 
 @login_required(login_url='/accounts/login/')
 def edittask(request, id):
@@ -55,15 +62,15 @@ def edittask(request, id):
     else:
         form = TaskForm(instance=task)
 
+    user = request.user
     projects = Project.objects.filter(members__in=[request.user])
     assignees = User.objects.all()  # TODO filter by selected project
     all_status = Status.objects.all()
     action = "/taskmanager/edittask/{}".format(id)
-    return render(request, 'taskmanager/newtask.html', {
-        'form': form,
-        'projects' : projects,
-        'assignees' : assignees,
-        'all_status' : all_status,
-        'action' : action,
-        'task' : task
-    })
+    return render(request, 'taskmanager/newtask.html', {'form': form,
+                                                        'projects' : projects,
+                                                        'assignees' : assignees,
+                                                        'all_status' : all_status,
+                                                        'action' : action,
+                                                        'task' : task,
+                                                        'user' : user})
