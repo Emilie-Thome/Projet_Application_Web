@@ -8,8 +8,10 @@ h5.path {padding:1rem 1.5rem;
   border-radius:0.5rem;}
 
 .project {padding:0.3rem 0.3rem;}
+
 .th {font-weight: bold;
   margin: fill;}
+
 .assignee {background-color:#007bff;
   margin: fill;
   display: inline-flex;
@@ -17,8 +19,10 @@ h5.path {padding:1rem 1.5rem;
   color: white;
   padding:0.3rem 0.3rem;
   border-radius:0.5rem;}
+
 .date {font-style:italic;
   margin: fill;}
+
 .status {background-color:#ffc107;
   margin: fill;
   display: inline-flex;
@@ -26,12 +30,32 @@ h5.path {padding:1rem 1.5rem;
   color: black;
   padding:0.3rem 0.3rem;
   border-radius:0.5rem;}
+
 .journal-entry{margin: fill;}
 
 footer.my-footer {padding:1rem 2rem;
   margin-left:4rem;
   margin-right:4rem;}
+
 hr.my-footer {margin-top: 0;
   border-top-color:#d5d5d5;}
 
 .form-group {margin: 0.3rem;}
+
+.btn-block{color: #007bff;}
+
+.btn {float: right;
+  background-color:#007bff}
+
+.btn-edit {position: relative;
+  float: right;
+  border: none;
+  background-color: white;
+  padding: 1rem 2rem;
+  font-size:6rem}
+
+.btn-md{border-color:#007bff;
+  float: left;
+  margin-top: 2rem}
+
+.col-form-label {padding: 0}

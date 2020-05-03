@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=80)
     members = models.ManyToManyField(User)
 
     class Meta:
@@ -23,9 +23,9 @@ class Status(models.Model):
 
 class Task(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    description = models.TextField(max_length=500)
-    assignee = models.ForeignKey(User, on_delete=models.CASCADE) # TODO, limit_choices_to=project.members)
+    name = models.CharField(max_length=80)
+    description = models.TextField(max_length=200)
+    assignee = models.ForeignKey(User, on_delete=models.CASCADE)
     start_date = models.DateField()
     due_date = models.DateField()
     priority = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])

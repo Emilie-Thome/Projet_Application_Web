@@ -3,9 +3,9 @@
 
 {% block path %}
 <h5 class="path">
-  <a href="/taskmanager/projects">Projects</a>
+  <a href="{% url 'projects' %}">Projects</a>
   /
-  <a href="/taskmanager/project/{{ task.project.id }}">{{ task.project.name }}</a>
+  <a href="{% url 'project' task.project.id %}">{{ task.project.name }}</a>
   /
   <a href="#">{{ task.name }}</a>
 </h5>
@@ -14,8 +14,8 @@
 {% block content %}
 
 <h1 class="display-2" >{{ task.project.name }}</h1>
-<button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-  <a href="/taskmanager/edittask/{{ task.id }}" class="btn-block" style="color: #007bff;">
+<button class="btn-edit">
+  <a href="{% url 'task' task.id %}" class="btn-block">
     <span class="glyphicon glyphicon-edit"></span>
   </a>
 </button>

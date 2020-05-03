@@ -4,10 +4,35 @@
 
 
 {% block content %}
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="login">
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="col-lg-10">
+            <label for="id_username"></label>
+            <input name="username" type="text" class="form-control" id="id_username" placeholder="login" required="" style="background-color:#faffbd">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-lg-10">
+            <label for="id_password"></label>
+            <input name="password" type="password" class="form-control" id="id_password" placeholder="password" required="" style="background-color:#faffbd">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col-lg-10">
+            <input type="submit" class="btn btn-md btn-primary" value="Log in"></input>
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
+    </div>
+</form>
+
+
+
 {% endblock %}
