@@ -30,7 +30,8 @@ def task(request, id):
                                                      'user' : user})
 
 @login_required(login_url='/accounts/login/')
-def newtask(request):
+def newtask(request, id):
+    project = Project.objects.get(id=id)
     if request.method == 'POST':
         form = TaskForm(request.POST or None)
         if form.is_valid():
@@ -40,12 +41,11 @@ def newtask(request):
         form = TaskForm()
 
     user = request.user
-    projects = Project.objects.filter(members__in = [request.user])
-    assignees = User.objects.all() #TODO filter by selected project
+    assignees = project.members.all()
     all_status = Status.objects.all()
     action = "/taskmanager/newtask"
     return render(request, 'taskmanager/newtask.html', {'form': form,
-                                                        'projects' : projects,
+                                                        'project': project,
                                                         'assignees' : assignees,
                                                         'all_status' : all_status,
                                                         'action' : action,
@@ -63,12 +63,10 @@ def edittask(request, id):
         form = TaskForm(instance=task)
 
     user = request.user
-    projects = Project.objects.filter(members__in=[request.user])
-    assignees = User.objects.all()  # TODO filter by selected project
+    assignees = task.project.members.all()
     all_status = Status.objects.all()
     action = "/taskmanager/edittask/{}".format(id)
     return render(request, 'taskmanager/newtask.html', {'form': form,
-                                                        'projects' : projects,
                                                         'assignees' : assignees,
                                                         'all_status' : all_status,
                                                         'action' : action,
