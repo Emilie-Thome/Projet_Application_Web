@@ -6,6 +6,17 @@ class TaskForm(forms.ModelForm):
         model = Task
         exclude = ('project',)
 
+        widgets = {'name':forms.TextInput(attrs={'class':'form-control col-sm-10', 'placeholder':'Name...'}),
+                   'description':forms.Textarea(attrs={'class':'form-control col-sm-10', 'placeholder':'Description...'}),
+                   'assignee':forms.Select(attrs={'class':'form-control col-sm-10', 'placeholder':'---------'}),
+                   'start_date':forms.DateInput(attrs={'class':'form-control col-sm-10'}),
+                   'due_date':forms.DateInput(attrs={'class':'form-control col-sm-10'}),
+                   'priority':forms.NumberInput(attrs={'min':1,'max': '5','class':'form-control col-sm-10'}),
+                   'status':forms.Select(attrs={'class':'form-control col-sm-10', 'placeholder':'---------'})
+                   }
+
+
+
     def clean(self):
         cleaned_data = super(TaskForm, self).clean()
         project = cleaned_data.get('project')
