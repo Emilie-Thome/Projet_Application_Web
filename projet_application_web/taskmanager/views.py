@@ -1,9 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from taskmanager.models import Project, Task, Journal, Status
 from taskmanager.form import TaskForm
-from django.contrib.auth.models import User
 
+
+def permission(user, project):
+    if not (user in project.members.all()):
+        raise Http404
 
 @login_required(login_url='/accounts/login/')
 def projects(request):
@@ -18,28 +22,34 @@ def projects(request):
 def project(request, id):
     ''' Display one project with the members '''
     user = request.user
-    project = Project.objects.get(id=id)
+    project = get_object_or_404(Project, id=id)
     tasks = Task.objects.filter(project=project)
+
+    permission(user, project)
     return render(request, 'taskmanager/project.html', {'project': project,
-                                                        'tasks': tasks,
-                                                        'user': user})
+                                                            'tasks': tasks,
+                                                            'user': user})
 
 
 @login_required(login_url='/accounts/login/')
 def task(request, id):
     ''' Display a task with the detail '''
     user = request.user
-    task = Task.objects.get(id=id)
+    task = get_object_or_404(Task, id=id)
     journals = Journal.objects.filter(task=task)
+
+    permission(user, task.project)
     return render(request, 'taskmanager/task.html', {'task': task,
-                                                     'journals': journals,
-                                                     'user': user})
+                                                         'journals': journals,
+                                                         'user': user})
+
+
 
 
 @login_required(login_url='/accounts/login/')
 def newtask(request, id):
     ''' Add a new task to the project '''
-    project = Project.objects.get(id=id)
+    project = get_object_or_404(Project, id=id)
 
     if request.method == 'POST':
         form = TaskForm(request.POST)
