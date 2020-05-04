@@ -50,3 +50,10 @@ class Journal(models.Model):
     def __str__(self):
         return self.entry
 
+
+def get_complete_name(self):
+    if self.first_name:
+        return self.first_name + " " + self.last_name
+    else:
+        return self.username
+User.add_to_class("__str__", get_complete_name)
