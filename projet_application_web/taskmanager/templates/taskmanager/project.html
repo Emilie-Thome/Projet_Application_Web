@@ -39,13 +39,7 @@
           {% for task in tasks %}
           <tr>
             <td><h4><a href="{% url 'task' task.id %}">{{ task.name }}</a></h4></td>
-            <td><h5 class="assignee">
-              {% if task.assignee.first_name %}
-              {{ task.assignee.first_name }} {{ task.assignee.last_name }}
-              {% else %}
-              {{ task.assignee.username }}
-              {% endif %}
-            </h5></td>
+            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
             <td><h4 class="date">{{ task.start_date }}</h4></td>
             <td><h4 class="date">{{ task.due_date }}</h4></td>
             <td><h4>

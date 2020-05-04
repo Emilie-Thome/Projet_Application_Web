@@ -27,13 +27,7 @@
   <tbody>
     <tr>
       <th scope="col"><h5 class="th">Assignee</h5></th>
-      <td><h6 class="assignee">
-        {% if task.assignee.first_name %}
-        {{ task.assignee.first_name }} {{ task.assignee.last_name }}
-        {% else %}
-        {{ task.assignee.username }}
-        {% endif %}
-      </h6></td>
+      <td><h6 class="assignee">{{ task.assignee }}</h6></td>
     </tr>
     <tr>
       <th scope="col"><h5 class="th">Start date</h5></th>
@@ -55,13 +49,7 @@
   <tbody>
     {% for journal in journals %}
     <tr>
-      <td style="white-space: nowrap; width: 1%;"><h6 class="assignee">
-        {% if journal.author.first_name %}
-        {{ journal.author.first_name }} {{ journal.author.last_name }}
-        {% else %}
-        {{ journal.author.username }}
-        {% endif %}
-      </h6></td>
+      <td style="white-space: nowrap; width: 1%;"><h6 class="assignee">{{ journal.author }}</h6></td>
       <td><h5 class="date">{{ journal.date }}</h5></td>
       <td style="width: 65%;"><h5 class="journal-entry">{{ journal.entry }}</h5></td>
     </tr>
