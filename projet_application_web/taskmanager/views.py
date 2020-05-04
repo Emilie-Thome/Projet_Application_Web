@@ -6,6 +6,7 @@ from taskmanager.form import TaskForm
 
 
 def permission(user, project):
+    ''' Redirect to error404 if the user is not a project member '''
     if not (user in project.members.all()):
         raise Http404
 
@@ -60,7 +61,7 @@ def newtask(request, id):
             return redirect('task', id=task.id)
     else:
         form = TaskForm()
-        form.assignee.choices = project.members.all()
+        form.fields['assignee'].choices = map((lambda member: (member.id, member)),project.members.all())
 
     user = request.user
     return render(request, 'taskmanager/newtask.html', {'form': form,
