@@ -50,16 +50,10 @@ def newtask(request, id):
             return redirect('task', id=task.id)
     else:
         form = TaskForm()
+        form.assignee.choices = project.members.all()
 
     user = request.user
-    assignees = project.members.all()
-    all_status = Status.objects.all()
-    action = "/taskmanager/newtask"
     return render(request, 'taskmanager/newtask.html', {'form': form,
-                                                        'project': project,
-                                                        'assignees': assignees,
-                                                        'all_status': all_status,
-                                                        'action': action,
                                                         'user': user})
 
 
@@ -74,14 +68,10 @@ def edittask(request, id):
             return redirect('task', id=id)
     else:
         form = TaskForm(instance=task)
+        form.fields['assignee'].choices = map((lambda member: (member.id, member)),task.project.members.all())
+        form.fields['status'].choices = map((lambda stat: (stat.id, stat)),Status.objects.all())
 
     user = request.user
-    assignees = task.project.members.all()
-    all_status = Status.objects.all()
-    action = "/taskmanager/edittask/{}".format(id)
     return render(request, 'taskmanager/newtask.html', {'form': form,
-                                                        'assignees': assignees,
-                                                        'all_status': all_status,
-                                                        'action': action,
                                                         'task': task,
                                                         'user': user})
