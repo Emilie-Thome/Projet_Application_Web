@@ -62,6 +62,8 @@ def newtask(request, id):
     else:
         form = TaskForm()
         form.fields['assignee'].choices = map((lambda member: (member.id, member)),project.members.all())
+        form.fields['assignee'].choices.insert(0,("", '---------')) # Set a placeholder, because it is
+                                                                    # removed with the choices setup
 
     user = request.user
     return render(request, 'taskmanager/newtask.html', {'form': form,
@@ -81,7 +83,6 @@ def edittask(request, id):
     else:
         form = TaskForm(instance=task)
         form.fields['assignee'].choices = map((lambda member: (member.id, member)),task.project.members.all())
-        form.fields['status'].choices = map((lambda stat: (stat.id, stat)),Status.objects.all())
 
     user = request.user
     return render(request, 'taskmanager/newtask.html', {'form': form,
