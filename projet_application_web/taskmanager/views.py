@@ -65,6 +65,7 @@ def newtask(request, id):
 
     user = request.user
     return render(request, 'taskmanager/newtask.html', {'form': form,
+                                                        'project': project,
                                                         'user': user})
 
 

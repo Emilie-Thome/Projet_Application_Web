@@ -5,7 +5,7 @@
 <h5 class="path">
   <a href="{% url 'projects' %}">Projects</a>
   /
-  <a href="#">{{ project.name }}</a>
+  <a href="#">{{ project }}</a>
 </h5>
 {% endblock %}
 
@@ -13,7 +13,7 @@
 {% block content %}
 <div class="row" style="padding: 0 0">
     <div class="col">
-      <h1 class="display-2" style="position: relative; float: left;">{{ project.name }}</h1>
+      <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
       <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
         <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
           <span class="glyphicon glyphicon-plus-sign"></span>
@@ -38,7 +38,7 @@
         <tbody>
           {% for task in tasks %}
           <tr>
-            <td><h4><a href="{% url 'task' task.id %}">{{ task.name }}</a></h4></td>
+            <td><h4><a href="{% url 'task' task.id %}">{{ task }}</a></h4></td>
             <td><h5 class="assignee">{{ task.assignee }}</h5></td>
             <td><h4 class="date">{{ task.start_date }}</h4></td>
             <td><h4 class="date">{{ task.due_date }}</h4></td>

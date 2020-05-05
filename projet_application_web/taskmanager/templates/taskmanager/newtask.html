@@ -6,11 +6,11 @@
     <a href="{% url 'projects' %}">Projects</a>
     /
     {% if task %}
-    <a href="{% url 'project' task.project.id %}">{{ task.project.name }}</a>
+    <a href="{% url 'project' task.project.id %}">{{ task.project }}</a>
     /
-    <a href="{% url 'task' task.id %}">{{ task.name }}</a>
+    <a href="{% url 'task' task.id %}">{{ task }}</a>
     {% else %}
-    <a href="{% url 'project' project.id %}">{{ project.name }}</a>
+    <a href="{% url 'project' project.id %}">{{ project }}</a>
     {% endif %}
 </h5>
 {% endblock %}
@@ -18,10 +18,10 @@
 {% block content %}
 
 {% if task %}
-<h1 class="display-2" >{{ task.project.name }}</h1>
+<h1 class="display-2" >{{ task.project }}</h1>
 <h2 class="display-3">Edit task</h2>
 {% else %}
-<h1 class="display-2" >{{ project.name }}</h1>
+<h1 class="display-2" >{{ project }}</h1>
 {% endif %}
 <br>
 

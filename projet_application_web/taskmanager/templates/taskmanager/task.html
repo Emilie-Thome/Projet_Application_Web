@@ -5,21 +5,21 @@
 <h5 class="path">
   <a href="{% url 'projects' %}">Projects</a>
   /
-  <a href="{% url 'project' task.project.id %}">{{ task.project.name }}</a>
+  <a href="{% url 'project' task.project.id %}">{{ task.project }}</a>
   /
-  <a href="#">{{ task.name }}</a>
+  <a href="#">{{ task }}</a>
 </h5>
 {% endblock %}
 
 {% block content %}
 
-<h1 class="display-2" >{{ task.project.name }}</h1>
+<h1 class="display-2" >{{ task.project }}</h1>
 <button class="btn-edit">
   <a href="{% url 'edittask' task.id %}" class="btn-block">
     <span class="glyphicon glyphicon-edit"></span>
   </a>
 </button>
-<h2 class="display-5">{{ task.name }}</h2>
+<h2 class="display-5">{{ task }}</h2>
 <h4 class="display-6" style="font-style: italic">{{ task.description }}</h4>
 
 
