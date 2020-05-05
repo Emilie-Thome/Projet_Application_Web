@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from taskmanager.models import Project, Task, Journal, Status
-from taskmanager.form import TaskForm
+from .models import Project, Task, Journal, Status
+from .form import TaskForm
 
 
 def permission(user, project):
