@@ -4,8 +4,11 @@ from .models import Task
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ('project',)
+        exclude = ('project',)  # The project is already known
+                                # as a task is added to an existing
+                                # project in the project page
 
+        # Fields widgets are defined :
         widgets = {'name':forms.TextInput(attrs={'class':'form-control col-sm-8', 'placeholder':'Name...'}),
                    'description':forms.Textarea(attrs={'class':'form-control col-sm-8 h-25', 'rows':'2','style':'height:30%', 'placeholder':'Description...'}),
                    'assignee':forms.Select(attrs={'class':'form-control col-sm-8'}),
@@ -15,9 +18,10 @@ class TaskForm(forms.ModelForm):
                    'status':forms.Select(attrs={'class':'form-control col-sm-8', 'placeholder':'---------'})
                    }
 
+        # Fields labels are defined :
         labels = {
             'name': 'Title :',
-            'description': 'Decription :',
+            'description': 'Description :',
             'assignee': 'Assignee :',
             'start_date': 'Start date :',
             'due_date': 'Due date :',
@@ -25,13 +29,12 @@ class TaskForm(forms.ModelForm):
             'status':  'Status :',
         }
 
-
-    error_css_class = "error"
+    # Set some validation rules :
     def clean(self):
         cleaned_data = super(TaskForm, self).clean()
 
-        ''' First, Assignee must be a project member.
-            This error can only be raised in the admin page '''
+        # First, Assignee must be a project member.
+        # This error can only be raised in the admin page
         project = cleaned_data.get('project')
         assignee = cleaned_data.get('assignee')
 
@@ -41,7 +44,7 @@ class TaskForm(forms.ModelForm):
                                "The assignee must be a project member !"
                                )
 
-        ''' Second, Due date must be after Start date '''
+        # Second, Due date must be after Start date
         start_date = cleaned_data.get('start_date')
         due_date = cleaned_data.get('due_date')
 
