@@ -28,6 +28,7 @@
         <thead></thead>
         <thead>
           <tr>
+            <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
             <th scope="col"><h4 class="th">Task</h4></th>
             <th scope="col"><h4 class="th">Assignee</h4></th>
             <th scope="col"><h4 class="th">Start date</h4></th>
@@ -38,6 +39,7 @@
         <tbody>
           {% for task in tasks %}
           <tr>
+            <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
             <td><h4><a href="{% url 'task' task.id %}">{{ task }}</a></h4></td>
             <td><h5 class="assignee">{{ task.assignee }}</h5></td>
             <td><h4 class="date">{{ task.start_date }}</h4></td>

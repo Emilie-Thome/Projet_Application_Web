@@ -27,9 +27,16 @@ h5.path {padding:1rem 1.5rem;
   margin: fill;
   display: inline-flex;
   font-weight: bold;
-  color: black;
   padding:0.3rem 0.3rem;
   border-radius:0.5rem;}
+
+.priority {background-color: darkgray;
+  margin: fill;
+  display: inline-flex;
+  font-weight: bold;
+  color: white;
+  padding:0.3rem 0.6rem;
+  border-radius:2rem;}
 
 .journal-entry{margin: fill;}
 
