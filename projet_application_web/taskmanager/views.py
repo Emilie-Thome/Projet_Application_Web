@@ -5,6 +5,10 @@ from .models import Project, Task, Journal, Status
 from .form import TaskForm
 
 
+
+def handler404(request):
+    return render(request, '404.html')
+
 def permission(user, project):
     ''' Redirect to error404 if the user is not a project member '''
     if not (user in project.members.all()):
