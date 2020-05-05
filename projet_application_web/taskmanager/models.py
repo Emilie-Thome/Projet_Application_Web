@@ -3,19 +3,20 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-
+# Project model
 class Project(models.Model):
     name = models.CharField(max_length=80, verbose_name="Project name")
     members = models.ManyToManyField(User, verbose_name="Project members")
 
     class Meta:
         verbose_name = "project"
+        # Ordering rule for 'view.projects'
         ordering = ['name']
 
     def __str__(self):
         return self.name
 
-
+# Status model
 class Status(models.Model):
     name = models.CharField(max_length=30, verbose_name="Status name")
 
@@ -25,7 +26,7 @@ class Status(models.Model):
     def __str__(self):
         return self.name
 
-
+# Task model
 class Task(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE, verbose_name="Task project")
     name = models.CharField(max_length=80, verbose_name="Task name")
@@ -38,12 +39,13 @@ class Task(models.Model):
                                                                     # a task because the status is deleted
     class Meta:
         verbose_name = "task"
+        # Ordering rule for 'view.project'
         ordering = ['priority']
 
     def __str__(self):
         return self.name
 
-
+# Journal model
 class Journal(models.Model):
     date = models.DateTimeField(default=timezone.now, verbose_name="Post date")
     entry = models.CharField(max_length=200, verbose_name="Journal entry")
@@ -52,12 +54,14 @@ class Journal(models.Model):
 
     class Meta:
         verbose_name = "journal"
+        # Ordering rule for 'view.task'
         ordering = ['date']
 
     def __str__(self):
         return self.entry
 
-
+# Set the user __str__ as their first/last name if it exists
+# but if it don't then use the username
 def get_complete_name(self):
     if self.first_name:
         return self.first_name + " " + self.last_name
