@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-
+<!-- Path -->
 {% block path %}
 <h5 class="path">
   <a href="{% url 'projects' %}">Projects</a>
@@ -10,7 +10,10 @@
 {% endblock %}
 
 
+<!-- Content -->
 {% block content %}
+
+<!-- Project Title And Add Task Button -->
 <div class="row" style="padding: 0 0">
     <div class="col">
       <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
@@ -22,6 +25,7 @@
     </div>
 </div>
 
+<!-- Project Tasks With Details And Edit Button In Table -->
 <div class="row">
     <div class="col">
       <table class="table">

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 
+<!-- Path -->
 {% block path %}
 <h5 class="path">
   <a href="{% url 'projects' %}">Projects</a>
@@ -11,8 +12,10 @@
 </h5>
 {% endblock %}
 
+<!-- Content -->
 {% block content %}
 
+<!-- Project, Title, Description Display And Edit Button -->
 <h1 class="display-2" >{{ task.project }}</h1>
 <button class="btn-edit">
   <a href="{% url 'edittask' task.id %}" class="btn-block">
@@ -22,7 +25,7 @@
 <h2 class="display-5">{{ task }}</h2>
 <h4 class="display-6" style="font-style: italic">{{ task.description }}</h4>
 
-
+<!-- Task Display -->
 <table class="table">
   <tbody>
     <tr>
@@ -44,6 +47,7 @@
   </tbody>
 </table>
 
+<!-- History -->
 <h4 class="display-6" style="font-weight: bold">History</h4>
 <table class="table">
   <tbody>

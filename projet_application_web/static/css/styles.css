@@ -1,3 +1,5 @@
+/* This is all the personalised styles used in the django project */
+
 .jumbotron {padding:2rem 2rem;
   margin: 2rem 3rem;
   border-radius:0.5rem;}
@@ -38,7 +40,7 @@ h5.path {padding:1rem 1.5rem;
   padding:0.3rem 0.6rem;
   border-radius:2rem;}
 
-.journal-entry{margin: fill;}
+.journal-entry {margin: fill;}
 
 footer.my-footer {padding:1rem 2rem;
   margin-left:4rem;
@@ -49,7 +51,7 @@ hr.my-footer {margin-top: 0;
 
 .form-group {margin: 0.3rem;}
 
-.btn-block{color: #007bff;}
+.btn-block {color: #007bff;}
 
 .btn {float: right;
   background-color:#007bff}
@@ -61,14 +63,13 @@ hr.my-footer {margin-top: 0;
   padding: 1rem 2rem;
   font-size:6rem}
 
-.btn-md{border-color:#007bff;
+.btn-md {border-color:#007bff;
   float: left;
   margin-top: 2rem}
 
 .col-form-label {padding: 0}
 
-.errorlist
-    {list-style: none;
+.errorlist {list-style: none;
   padding: 1rem 1.5rem;
   margin-bottom: 0;
   color: darkred;}

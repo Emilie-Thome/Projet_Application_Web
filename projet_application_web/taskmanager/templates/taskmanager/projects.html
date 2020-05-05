@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 
+<!-- Path -->
 {% block path %}
 <h5 class="path">
   <a href="#">Projects</a>
 </h5>
 {% endblock %}
 
+<!-- Content -->
 {% block content %}
+
+<!-- Projects -->
 <h1 class="display-2">Projects</h1>
 
+<!-- Display Projects -->
 <div class="row">
   <div class="col">
       <table class="table table-bordered">
@@ -16,9 +21,12 @@
           {% for project in projects %}
           <tr>
               <td>
+                  <!-- Project With Link -->
                   <h4 class="project" style="display: inline"><a href="{% url 'project' project.id %}">{{ project }}</a> - </h4>
-                  {% for assignee in project.members.all %}
-                  <h6 class="assignee">{{ assignee }}</h6>
+
+                  <!-- Members -->
+                  {% for member in project.members.all %}
+                  <h6 class="assignee">{{ member }}</h6>
                   {% endfor %}
               </td>
           </tr>

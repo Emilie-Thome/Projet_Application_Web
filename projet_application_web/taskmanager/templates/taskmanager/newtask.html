@@ -1,22 +1,25 @@
 {% extends "base.html" %}
 
 
+<!-- Path According If The Task Is Added Or Edited -->
 {% block path %}
 <h5 class="path">
     <a href="{% url 'projects' %}">Projects</a>
     /
-    {% if task %}
+    {% if task %} <!-- If The Task Is Edited, Display Task Path -->
     <a href="{% url 'project' task.project.id %}">{{ task.project }}</a>
     /
     <a href="{% url 'task' task.id %}">{{ task }}</a>
-    {% else %}
+    {% else %} <!-- If The Task Is Added, Display Project Path -->
     <a href="{% url 'project' project.id %}">{{ project }}</a>
     {% endif %}
 </h5>
 {% endblock %}
 
+<!-- Content -->
 {% block content %}
 
+<!-- Action Band According If The Task Is Added Or Edited -->
 {% if task %}
 <h1 class="display-2" >{{ task.project }}</h1>
 <h2 class="display-3">Edit task</h2>
@@ -25,11 +28,10 @@
 {% endif %}
 <br>
 
-
-
+<!-- Task Form -->
 <form action="" method="post">
     {% csrf_token %}
-
+    <!-- Fields -->
     {% for field in form %}
     <div class="form-group row">
         <label class="col-sm-offset-1 col-sm-2 col-form-label">{{ field.label_tag }}</label>
@@ -37,7 +39,7 @@
         <div class="col-sm-offset-3">{{ field.errors }}</div>
     </div>
     {% endfor %}
-
+    <!-- Submit -->
     <div class="form-row">
         <div class="col-lg-offset-1 col">
             {% if task %}

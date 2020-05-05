@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
+<!-- No Path -->
 {% block user_band %}{% endblock %}
 
 
+<!-- Content -->
 {% block content %}
 
+<!-- Error Display -->
 {% if form.errors %}
 <div class="row">
     <div class="col col-lg-offset-1">
@@ -13,9 +16,10 @@
 </div>
 {% endif %}
 
-
+<!-- Login Form -->
 <form action="{% url 'login' %}" method="post">
     {% csrf_token %}
+    <!-- Fields -->
     <div class="form-row">
         <div class="col-lg-10 col-lg-offset-1">
             <label for="id_username"></label>
@@ -28,7 +32,7 @@
             <input name="password" type="password" class="form-control" id="id_password" placeholder="password" required="" style="background-color:#faffbd">
         </div>
     </div>
-
+    <!-- Submit -->
     <div class="form-row">
         <div class="col-lg-10 col-lg-offset-1">
             <input type="submit" class="btn btn-md btn-primary" value="Log in"></input>
@@ -36,7 +40,4 @@
         </div>
     </div>
 </form>
-
-
-
 {% endblock %}
