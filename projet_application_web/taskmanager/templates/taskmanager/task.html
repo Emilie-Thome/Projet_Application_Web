@@ -15,7 +15,7 @@
 <!-- Content -->
 {% block content %}
 
-<!-- Project, Title, Description Display And Edit Button -->
+<!-- Project, Title, Priority, Description Display And Edit Button -->
 <h1 class="display-2" >{{ task.project }}</h1>
 <button class="btn-edit">
   <a href="{% url 'edittask' task.id %}" class="btn-block">
@@ -24,25 +24,33 @@
 </button>
 <h2 class="display-5">{{ task }}</h2>
 <h4 class="display-6" style="font-style: italic">{{ task.description }}</h4>
-
 <!-- Task Display -->
 <table class="table">
   <tbody>
     <tr>
-      <th scope="col"><h5 class="th">Assignee</h5></th>
-      <td><h6 class="assignee">{{ task.assignee }}</h6></td>
+      <th scope="col" class="col-md-4"><h5 class="th">Priority</h5></th>
+      <td class="col-md-3 text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+      <td class="col-md-5"></td>
     </tr>
     <tr>
-      <th scope="col"><h5 class="th">Start date</h5></th>
-      <td><h5 class="date">{{ task.start_date }}</h5></td>
+      <th scope="col" class="col-md-4"><h5 class="th">Assignee</h5></th>
+      <td class="col-md-3 text-center"><h6 class="assignee">{{ task.assignee }}</h6></td>
+      <td class="col-md-5"></td>
     </tr>
     <tr>
-      <th scope="col"><h5 class="th">Due date</h5></th>
-        <td><h5 class="date">{{ task.due_date }}</h5></td>
+      <th scope="col" class="col-md-4"><h5 class="th">Start date</h5></th>
+      <td class="col-md-3 text-center"><h5 class="date">{{ task.start_date }}</h5></td>
+      <td class="col-md-5"></td>
     </tr>
     <tr>
-      <th scope="col"><h5 class="th">Status</h5></th>
-      <td><h6 class="status">{{ task.status }}</h6></td>
+      <th scope="col" class="col-md-4"><h5 class="th">Due date</h5></th>
+      <td class="col-md-3 text-center"><h5 class="date">{{ task.due_date }}</h5></td>
+      <td class="col-md-5"></td>
+    </tr>
+    <tr>
+      <th scope="col" class="col-md-4"><h5 class="th">Status</h5></th>
+      <td class="col-md-3 text-center"><h6 class="status">{{ task.status }}</h6></td>
+      <td class="col-md-5"></td>
     </tr>
   </tbody>
 </table>
