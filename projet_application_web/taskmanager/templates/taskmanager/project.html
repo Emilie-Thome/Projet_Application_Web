@@ -25,12 +25,14 @@
         </div>
     </div>
 
-    {% if my_tasks %}
-        <!-- Project Tasks Assigned To The User With Details And Edit Button In Table -->
-        <div class="row">
-            <div class="col">
-                <table class="table">
-                    <thead></thead>
+    <!-- Project Tasks With Details And Edit Button In Table -->
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead></thead>
+
+                {% if my_tasks %} <!-- If the user has tasks in this project they will be separated here -->
+
                     <thead>
                     <tr>
                         <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
@@ -43,6 +45,7 @@
                     </tr>
                     </thead>
                     <tbody>
+
                     {% for task in my_tasks %}
                         <tr>
                             <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
@@ -61,18 +64,9 @@
                         </tr>
                     {% endfor %}
                     </tbody>
-                </table>
-            </div>
-        </div>
+                {% endif %}
 
-    {% endif %}
-
-    {% if tasks %}
-        <!-- Project Tasks of other users With Details And Edit Button In Table -->
-        <div class="row">
-            <div class="col">
-                <table class="table">
-                    <thead></thead>
+                {% if tasks %}
                     <thead>
                     <tr>
                         <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
@@ -84,7 +78,9 @@
                         <th scope="col"></th>
                     </tr>
                     </thead>
+
                     <tbody>
+
                     {% for task in tasks %}
                         <tr>
                             <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
@@ -102,9 +98,12 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% endif %}
+                </tbody>
+                {% if not my_tasks and not tasks %}
+                    <h1>No tasks in this project!</h1>
+                {% endif %}
+            </table>
         </div>
-    {% endif %}
+    </div>
 {% endblock %}
