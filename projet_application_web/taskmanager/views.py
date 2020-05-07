@@ -144,3 +144,18 @@ def tasks(request):
     tasks = Task.objects.filter(project__members__in=[user])
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
                                                          'user': user})
+
+##
+# Display every done task of the user with the
+# associated person responsible for the task
+#
+# @param request    WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def tasks_done(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user]).filter(status__name="Terminée")
+    done_only = True
+    return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                         'user': user,
+                                                      'done_only': done_only})
