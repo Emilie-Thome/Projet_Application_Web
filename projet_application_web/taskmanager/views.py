@@ -5,6 +5,14 @@ from .models import Project, Task, Journal
 from .form import TaskForm
 
 ##
+#Print the home page
+#
+#@param request    WSGIRequest list with all HTTP Request
+##
+def home(request):
+    return render(request, 'home.html')
+
+##
 # Handle 404 Errors
 #
 # @param request    WSGIRequest list with all HTTP Request
