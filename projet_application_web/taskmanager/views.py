@@ -53,10 +53,12 @@ def projects(request):
 def project(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
-    tasks = Task.objects.filter(project=project)
+    my_tasks = Task.objects.filter(project=project).filter(assignee=user)
+    tasks = Task.objects.filter(project=project).exclude(assignee=user)
 
     permission(user, project) # Checks if the user is a member of the project
     return render(request, 'taskmanager/project.html', {'project': project,
+                                                        'my_tasks': my_tasks,
                                                             'tasks': tasks,
                                                             'user': user})
 
