@@ -124,3 +124,15 @@ def edittask(request, id):
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
+##
+# Display every task of the user with the
+# associated person responsible for the task
+#
+# @param request    WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def tasks(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user])
+    return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                         'user': user})

@@ -1,0 +1,30 @@
+{% extends "projects.html" %}
+
+{% block projects_navigation %}
+
+    <!-- Tasks -->
+    <h1 class="display-2">
+        <a href="{% url 'projects' %}" class="text-muted">Projects</a>/
+        <a href="{% url 'tasks' %}">Tasks</a>/
+        <a href="#" class="text-muted">Tasks done</a>/
+        <a href="#" class="text-muted">Activities</a>
+    </h1>
+
+{% endblock %}
+
+{% block projects_table %}
+
+    {% for task in tasks %}
+        <tr>
+            <td>
+                <!-- Task With Link -->
+                <h4 class="task" style="display: inline"><a
+                        href="{% url 'task' task.id %}">{{ task }}</a> - </h4>
+
+                <!-- Assigned to -->
+                    <h6 class="assignee">{{ task.assignee }}</h6>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}

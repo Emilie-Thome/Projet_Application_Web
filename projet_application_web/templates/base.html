@@ -35,7 +35,7 @@
     <!-- User Band -->
     {% block user_band %}
      <p class="lead">
-       Welcome {{ user }} !
+         Welcome {{ user }} ! Here are your projects: <a href="{% url 'projects' %}">home</a>
        <span>
          <a href="{% url 'logout' %}" class="btn btn-info btn-lg" role="button">
            <span class="glyphicon glyphicon-log-out"></span> Log out
