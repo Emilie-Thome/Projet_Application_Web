@@ -46,7 +46,8 @@
           <tr>
             <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
             <td><h4><a href="{% url 'task' task.id %}"style="white-space: nowrap; width: 1%">{{ task }}</a></h4></td>
-            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
             <td><h4 class="date">{{ task.start_date }}</h4></td>
             <td><h4 class="date">{{ task.due_date }}</h4></td>
             <td><h4>

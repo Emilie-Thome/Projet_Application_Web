@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task
+from .models import Task, Journal
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -54,3 +54,15 @@ class TaskForm(forms.ModelForm):
                            )
 
         return cleaned_data
+
+class JournalForm(forms.ModelForm):
+    class Meta:
+        model = Journal
+        fields = ('entry',)  # Only the entry is necessary
+
+    # Fields widgets are defined :
+    widgets = {'entry':forms.TextInput(attrs={'class':'form-control col-sm-8',
+                                              'placeholder':'Entry...'}),}
+
+    # Fields labels are defined :
+    labels = {'entry': 'Entry :',}

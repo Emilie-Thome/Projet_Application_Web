@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Project, Task, Journal
-from .form import TaskForm
+from .form import TaskForm, JournalForm
 
 ##
 # Handle 404 Errors
@@ -66,8 +66,8 @@ def task(request, id):
 
     permission(user, task.project) # Checks if the user is a member of the project
     return render(request, 'taskmanager/task.html', {'task': task,
-                                                         'journals': journals,
-                                                         'user': user})
+                                                     'journals': journals,
+                                                     'user': user})
 
 ##
 # Add a new task to the project
@@ -124,3 +124,33 @@ def edittask(request, id):
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
+
+##
+# Add a new journal to the Task
+#
+# @param request     WSGIRequest list with all HTTP Request
+# @param             id The Task's ID
+##
+@login_required(login_url='/accounts/login/')
+def newjournal(request, id):
+    user = request.user
+    task = get_object_or_404(Task, id=id)
+    permission(user, task.project) # Checks if the user is a member of the project
+
+    if request.method == 'POST':
+        form = JournalForm(request.POST)
+        if form.is_valid():
+            journal = form.save(commit=False) # Do not save directly in the DB
+            journal.task = task # The project is not in the form because it is already defined
+            journal.author = user
+            journal.save()
+            return redirect('task', id=task.id)
+    else:
+        form = JournalForm()
+
+    journals = Journal.objects.filter(task=task)
+    # Use task.html and add {% if form %}
+    return render(request, 'taskmanager/task.html', {'form': form,
+                                                     'task': task,
+                                                     'journals': journals,
+                                                     'user': user})
