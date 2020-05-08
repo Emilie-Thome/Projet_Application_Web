@@ -2,62 +2,108 @@
 
 <!-- Path -->
 {% block path %}
-<h5 class="path">
-  <a href="{% url 'projects' %}">Projects</a>
-  /
-  <a href="#">{{ project }}</a>
-</h5>
+    <h5 class="path">
+        <a href="{% url 'projects' %}">Projects</a>
+        /
+        <a href="#">{{ project }}</a>
+    </h5>
 {% endblock %}
 
 
 <!-- Content -->
 {% block content %}
 
-<!-- Project Title And Add Task Button -->
-<div class="row" style="padding: 0 0">
-    <div class="col">
-      <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
-      <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-        <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
-          <span class="glyphicon glyphicon-plus-sign"></span>
-        </a>
-      </button>
+    <!-- Project Title And Add Task Button -->
+    <div class="row" style="padding: 0 0">
+        <div class="col">
+            <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
+            <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
+                <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                </a>
+            </button>
+        </div>
     </div>
-</div>
 
-<!-- Project Tasks With Details And Edit Button In Table -->
-<div class="row">
-    <div class="col">
-      <table class="table">
-        <thead></thead>
-        <thead>
-          <tr>
-            <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
-            <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th">Task</h4></th>
-            <th scope="col"><h4 class="th"></h4></th>
-            <th scope="col"><h4 class="th">Assignee</h4></th>
-            <th scope="col"><h4 class="th">Start date</h4></th>
-            <th scope="col"><h4 class="th">Due date</h4></th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for task in tasks %}
-          <tr>
-            <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
-            <td><h4><a href="{% url 'task' task.id %}"style="white-space: nowrap; width: 1%">{{ task }}</a></h4></td>
-            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
-            <td><h4 class="date">{{ task.start_date }}</h4></td>
-            <td><h4 class="date">{{ task.due_date }}</h4></td>
-            <td><h4>
-              <a href="{% url 'edittask' task.id %}" class="btn-block">
-                <span class="glyphicon glyphicon-edit"></span>
-              </a></h4>
-            </td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+    <!-- Project Tasks With Details And Edit Button In Table -->
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead></thead>
+
+                {% if my_tasks %} <!-- If the user has tasks in this project they will be separated here -->
+
+                    <thead>
+                    <tr>
+                        <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
+                        <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th">Task</h4></th>
+                        <th scope="col"><h4 class="th"></h4></th>
+                        <th scope="col"><h4 class="th">Assignee</h4></th>
+                        <th scope="col"><h4 class="th">Start date</h4></th>
+                        <th scope="col"><h4 class="th">Due date</h4></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for task in my_tasks %}
+                        <tr>
+                            <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+                            <td><h4><a href="{% url 'task' task.id %}"
+                                       style="white-space: nowrap; width: 1%">{{ task }}</a>
+                            </h4></td>
+                            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+                            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+                            <td><h4 class="date">{{ task.start_date }}</h4></td>
+                            <td><h4 class="date">{{ task.due_date }}</h4></td>
+                            <td><h4>
+                                <a href="{% url 'edittask' task.id %}" class="btn-block">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a></h4>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                {% endif %}
+
+                {% if tasks %}
+                    <thead>
+                    <tr>
+                        <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
+                        <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th">Task</h4></th>
+                        <th scope="col"><h4 class="th"></h4></th>
+                        <th scope="col"><h4 class="th">Assignee</h4></th>
+                        <th scope="col"><h4 class="th">Start date</h4></th>
+                        <th scope="col"><h4 class="th">Due date</h4></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for task in tasks %}
+                        <tr>
+                            <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+                            <td><h4><a href="{% url 'task' task.id %}"
+                                       style="white-space: nowrap; width: 1%">{{ task }}</a>
+                            </h4></td>
+                            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+                            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+                            <td><h4 class="date">{{ task.start_date }}</h4></td>
+                            <td><h4 class="date">{{ task.due_date }}</h4></td>
+                            <td><h4>
+                                <a href="{% url 'edittask' task.id %}" class="btn-block">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a></h4>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+                {% if not my_tasks and not tasks %}
+                    <h1>No tasks in this project!</h1>
+                {% endif %}
+            </table>
+        </div>
     </div>
-</div>
 {% endblock %}
