@@ -56,39 +56,22 @@
 </table>
 
 <!-- History -->
-
+<h3 class="display-6" style="font-weight: bold">History</h3>
 <!-- If A Journal Is Added Or Editted -->
-{% if form %}
-<form action="" method="post">
+<form action="{% url 'task' task.id %}" method="post">
     {% csrf_token %}
     <!-- Fields -->
-    {% for field in form %}
-    <div class="form-group row">
-        <label class="col-sm-offset-1 col-sm-2 col-form-label">{{ field.label_tag }}</label>
-        {{ field }}
-    </div>
-    {% endfor %}
-    <!-- Submit Journal -->
-    <div class="form-row">
-        <div class="col-lg-offset-1 col">
-            {% if journal %}
-            <button type="submit" class="btn btn-primary btn-md">Modify</button>
-            {% else %}
-            <button type="submit" class="btn btn-primary btn-md">Enter</button>
-            {% endif %}
+    <div class="form-group row" style="color: #007bff; margin-top: 2rem">
+        <div class="col-sm-2 col-form-label">{{ form.entry.label_tag }}</div>
+        {{ form.entry }}
+        <!-- Submit Journal -->
+        <div class="col-sm-1">
+            <button type="submit" class="btn btn-info glyphicon glyphicon-comment"></button>
         </div>
     </div>
 </form>
-{% else %} <!-- Add Journal Button -->
-<button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-    <a href="{% url 'newjournal' task.id %}" class="btn-block" style="color: #007bff;">
-        <span class="glyphicon glyphicon-plus-sign"></span>
-    </a>
-</button>
-{% endif %}
 
 <!-- Current History -->
-<h4 class="display-6" style="font-weight: bold">History</h4>
 <table class="table">
   <tbody>
     {% for journal in journals %}

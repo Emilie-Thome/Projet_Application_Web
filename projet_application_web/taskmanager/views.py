@@ -54,6 +54,7 @@ def project(request, id):
 
 ##
 # Display one task, details associated and history
+# History can be added
 #
 # @param request     WSGIRequest list with all HTTP Request
 # @param             id The task's ID
@@ -65,7 +66,21 @@ def task(request, id):
     journals = Journal.objects.filter(task=task)
 
     permission(user, task.project) # Checks if the user is a member of the project
-    return render(request, 'taskmanager/task.html', {'task': task,
+
+    ''' New journal entry can always be posted, no specific view '''
+    if request.method == 'POST':
+        form = JournalForm(request.POST)
+        if form.is_valid():
+            journal = form.save(commit=False) # Do not save directly in the DB
+            journal.task = task # The project is not in the form because it is already defined
+            journal.author = user
+            journal.save()
+            return redirect('task', id=task.id)
+    else:
+        form = JournalForm()
+
+    return render(request, 'taskmanager/task.html', {'form': form,
+                                                     'task': task,
                                                      'journals': journals,
                                                      'user': user})
 
@@ -124,33 +139,3 @@ def edittask(request, id):
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
-
-##
-# Add a new journal to the Task
-#
-# @param request     WSGIRequest list with all HTTP Request
-# @param             id The Task's ID
-##
-@login_required(login_url='/accounts/login/')
-def newjournal(request, id):
-    user = request.user
-    task = get_object_or_404(Task, id=id)
-    permission(user, task.project) # Checks if the user is a member of the project
-
-    if request.method == 'POST':
-        form = JournalForm(request.POST)
-        if form.is_valid():
-            journal = form.save(commit=False) # Do not save directly in the DB
-            journal.task = task # The project is not in the form because it is already defined
-            journal.author = user
-            journal.save()
-            return redirect('task', id=task.id)
-    else:
-        form = JournalForm()
-
-    journals = Journal.objects.filter(task=task)
-    # Use task.html and add {% if form %}
-    return render(request, 'taskmanager/task.html', {'form': form,
-                                                     'task': task,
-                                                     'journals': journals,
-                                                     'user': user})

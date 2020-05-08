@@ -60,9 +60,9 @@ class JournalForm(forms.ModelForm):
         model = Journal
         fields = ('entry',)  # Only the entry is necessary
 
-    # Fields widgets are defined :
-    widgets = {'entry':forms.TextInput(attrs={'class':'form-control col-sm-8',
-                                              'placeholder':'Entry...'}),}
+        # Fields widgets are defined :
+        widgets = {'entry':forms.TextInput(attrs={'class':'form-control col-sm-9',
+                                                  'placeholder':'Message...'}),}
 
-    # Fields labels are defined :
-    labels = {'entry': 'Entry :',}
+        # Fields labels are defined :
+        labels = {'entry': 'Write a message :',}
