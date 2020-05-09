@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+<!-- No Path -->
+{% block user_band %}{% endblock %}
+
+<!-- Content -->
+{% block content %}
+
+    <h1>
+        {% if user.is_authenticated %}
+            <p>{{ user.username }}, here are your projects:
+                <a type="button" class="btn btn-primary align-left" href="{% url 'projects' %}">Your projects</a>
+            </p>
+
+        {% else %}
+            <p>
+                To use this wonderful app please sign in!
+                <a type="button" class="btn btn-primary" href="{% url 'login' %}">Login</a>
+            </p>
+        {% endif %}
+    </h1>
+
+
+
+{% endblock %}

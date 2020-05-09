@@ -2,37 +2,54 @@
 
 <!-- Path -->
 {% block path %}
-<h5 class="path">
-  <a href="#">Projects</a>
-</h5>
+    <!--<h5 class="path">
+        <a href="#">Projects</a>
+    </h5> -->
 {% endblock %}
 
 <!-- Content -->
 {% block content %}
 
-<!-- Projects -->
-<h1 class="display-2">Projects</h1>
+    {% block projects_navigation %}
 
-<!-- Display Projects -->
-<div class="row">
-  <div class="col">
-      <table class="table table-bordered">
-          <tbody>
-          {% for project in projects %}
-          <tr>
-              <td>
-                  <!-- Project With Link -->
-                  <h4 class="project" style="display: inline"><a href="{% url 'project' project.id %}">{{ project }}</a> - </h4>
+        <!-- Projects -->
+        <h1 class="display-2">
+            <a href="{% url 'projects' %}">Projects</a>/
+            <a href="{% url 'tasks' %}" class="text-muted">Tasks</a>/
+            <a href="{% url 'tasks_done' %}" class="text-muted">Tasks done</a>/
+            <a href="#" class="text-muted">Activities</a>
+        </h1>
 
-                  <!-- Members -->
-                  {% for member in project.members.all %}
-                  <h6 class="assignee">{{ member }}</h6>
-                  {% endfor %}
-              </td>
-          </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-  </div>
-</div>
+    {% endblock %}
+
+    <!-- Display Projects -->
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered">
+                <tbody>
+
+                {% block projects_table %}
+
+                    {% for project in projects %}
+                        <tr>
+                            <td>
+                                <!-- Project With Link -->
+                                <h4 class="project" style="display: inline"><a
+                                        href="{% url 'project' project.id %}">{{ project }}</a> - </h4>
+
+                                <!-- Members -->
+                                {% for member in project.members.all %}
+                                    <h6 class="assignee">{{ member }}</h6>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                {% endblock %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 {% endblock %}

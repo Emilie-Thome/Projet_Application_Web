@@ -1,0 +1,40 @@
+{% extends "projects.html" %}
+
+<!-- Highlight the browsing page -->
+{% block projects_navigation %}
+
+    <!-- Tasks -->
+    <h1 class="display-2">
+        <a href="{% url 'projects' %}" class="text-muted">Projects</a>/
+
+        {% if done_only %} <!-- On garde le même template pour l'affichage des tâches normales et des tâches terminées-->
+        <a href="{% url 'tasks' %}" class="text-muted">Tasks</a>/
+        <a href="{% url 'tasks_done' %}" >Tasks done</a>/
+
+        {% else %}
+        <a href="{% url 'tasks' %}">Tasks</a>/
+        <a href="{% url 'tasks_done' %}" class="text-muted">Tasks done</a>/
+        {% endif %}
+
+        <a href="#" class="text-muted">Activities</a>
+    </h1>
+
+{% endblock %}
+
+<!-- Content of the table -->
+{% block projects_table %}
+
+    {% for task in tasks %}
+        <tr>
+            <td>
+                <!-- Task With Link -->
+                <h4 class="task" style="display: inline"><a
+                        href="{% url 'task' task.id %}">{{ task }}</a> - </h4>
+
+                <!-- Assigned to -->
+                    <h6 class="assignee">{{ task.assignee }}</h6>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}
