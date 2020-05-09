@@ -13,6 +13,10 @@
 <!-- Content -->
 {% block content %}
 
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+
 <!-- Project Title And Add Task Button -->
 <div class="row" style="padding: 0 0">
     <div class="col">
@@ -27,18 +31,28 @@
 
 <!-- Project Tasks With Details And Edit Button In Table -->
 <div class="row">
-    <div class="col">
+    <div class="col filterable">
       <table class="table">
-        <thead></thead>
+        <thead>
+            <tr class="filters">
+              <th></th>
+              <th><input type="text" class="form-control" placeholder="Search Task..."></th>
+              <th><input type="text" class="form-control" placeholder="Status"></th>
+              <th><input type="text" class="form-control" placeholder="Assignee"></th>
+              <th><input type="text" class="form-control" placeholder="Start Date"></th>
+              <th><input type="text" class="form-control" placeholder="Due Date"></th>
+              <th></th>
+            </tr>
+        </thead>
         <thead>
           <tr>
-            <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th"></h4></th>
-            <th scope="col" style="white-space: nowrap; width: 1%"><h4 class="th">Task</h4></th>
-            <th scope="col"><h4 class="th"></h4></th>
-            <th scope="col"><h4 class="th">Assignee</h4></th>
-            <th scope="col"><h4 class="th">Start date</h4></th>
-            <th scope="col"><h4 class="th">Due date</h4></th>
-            <th scope="col"></th>
+            <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+            <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
+            <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+            <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
+            <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
+            <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
+            <th scope="col" class="col-sm-1"></th>
           </tr>
         </thead>
         <tbody>
@@ -46,7 +60,8 @@
           <tr>
             <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
             <td><h4><a href="{% url 'task' task.id %}"style="white-space: nowrap; width: 1%">{{ task }}</a></h4></td>
-            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+            <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+            <td><h5 class="assignee">{{ task.assignee }}</h5></td>
             <td><h4 class="date">{{ task.start_date }}</h4></td>
             <td><h4 class="date">{{ task.due_date }}</h4></td>
             <td><h4>
@@ -60,4 +75,32 @@
       </table>
     </div>
 </div>
+
+<script>
+$(document).ready(function(){
+    $('.filterable .filters input').keyup(function(){
+        /* Useful DOM data and selectors */
+        var $input = $(this),
+        inputContent = $input.val().toLowerCase(),
+        $panel = $input.parents('.filterable'),
+        column = $panel.find('.filters th').index($input.parents('th')),
+        $table = $panel.find('.table'),
+        $rows = $table.find('tbody tr');
+        /* Dirtiest filter function ever ;) */
+        var $filteredRows = $rows.filter(function(){
+            var value = $(this).find('td').eq(column).text().toLowerCase();
+            return value.indexOf(inputContent) === -1;
+        });
+        /* Clean previous no-result if exist */
+        $table.find('tbody .no-result').remove();
+        /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+        $rows.show();
+        $filteredRows.hide();
+        /* Prepend no-result row if all rows are filtered */
+        if ($filteredRows.length === $rows.length) {
+            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
+        }
+    });
+});
+</script>
 {% endblock %}
