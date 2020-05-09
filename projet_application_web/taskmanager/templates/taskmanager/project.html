@@ -12,8 +12,6 @@
 
 <!-- Content -->
 {% block content %}
-
-
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
@@ -29,21 +27,78 @@
     </div>
 </div>
 
+
+
+
+<!-- Filters -->
+<div class="row filters">
+  <div class="col">
+    <hr class="my-footer">
+    <div class="form-row align-items-center">
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="searchtask">Quick Search :</label>
+        <input type="text" class="form-control" id="searchtask" placeholder="Search Task...">
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-1">
+        <label class="col-form-label">Start date :</label>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="start-date-min">From </label>
+        <input type="date" class="form-control" id="start-date-min">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="start-date-max"> To </label>
+        <input type="date" class="form-control" id="start-date-max">
+      </div>
+    </div>
+    <div class="form-row align-items-center">
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="statuss">Status</label>
+        <select class="form-control" id="statuss">
+          <option value="" selected>-----</option>
+          {% for status in statuss %}
+          <option value="{{ status }}">{{ status }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="assignees">Assignees</label>
+        <select class="form-control" id="assignees">
+          <option value="" selected>-----</option>
+          {% for member in members %}
+          <option value="{{ member }}">{{ member }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-1">
+        <label class="col-form-label">Due date :</label>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="due-date-min">From </label>
+        <input type="date" class="form-control" id="due-date-min">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="due-date-max"> To </label>
+        <input type="date" class="form-control" id="due-date-max">
+      </div>
+    </div>
+    <br>
+    <hr class="my-footer">
+  </div>
+</div>
+
 <!-- Project Tasks With Details And Edit Button In Table -->
 <div class="row">
-    <div class="col filterable">
-      <table class="table">
-        <thead>
-            <tr class="filters">
-              <th></th>
-              <th><input type="text" class="form-control" placeholder="Search Task..."></th>
-              <th><input type="text" class="form-control" placeholder="Status"></th>
-              <th><input type="text" class="form-control" placeholder="Assignee"></th>
-              <th><input type="text" class="form-control" placeholder="Start Date"></th>
-              <th><input type="text" class="form-control" placeholder="Due Date"></th>
-              <th></th>
-            </tr>
-        </thead>
+    <div class="col">
+      <table class="table" id="tasks-table">
         <thead>
           <tr>
             <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
@@ -78,29 +133,52 @@
 
 <script>
 $(document).ready(function(){
-    $('.filterable .filters input').keyup(function(){
-        /* Useful DOM data and selectors */
-        var $input = $(this),
-        inputContent = $input.val().toLowerCase(),
-        $panel = $input.parents('.filterable'),
-        column = $panel.find('.filters th').index($input.parents('th')),
-        $table = $panel.find('.table'),
-        $rows = $table.find('tbody tr');
-        /* Dirtiest filter function ever ;) */
-        var $filteredRows = $rows.filter(function(){
-            var value = $(this).find('td').eq(column).text().toLowerCase();
-            return value.indexOf(inputContent) === -1;
-        });
-        /* Clean previous no-result if exist */
-        $table.find('tbody .no-result').remove();
-        /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
-        $rows.show();
-        $filteredRows.hide();
-        /* Prepend no-result row if all rows are filtered */
-        if ($filteredRows.length === $rows.length) {
-            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
-        }
+  $(".filters").change(function(){
+    var $table = $("#tasks-table"),
+            $rows = $table.find('tbody tr');
+
+    /* Useful DOM data and selectors */
+    var $searchtask = $("#searchtask"),
+            $statuss = $("#statuss"),
+            $assignee = $("#assignees"),
+            $start_date_min = $("#start-date-min"),
+            $start_date_max = $("#start-date-max"),
+            $due_date_min = $("#due-date-min"),
+            $due_date_max = $("#due-date-max");
+
+    var inputTask = $searchtask.val().toLowerCase(),
+            inputStatus = $statuss.val(),
+            inputAssignee = $assignee.val(),
+            inputStartDateMin = new Date($start_date_min.val()),
+            inputStartDateMax = new Date($start_date_max.val()),
+            inputDueDateMin = new Date($due_date_min.val()),
+            inputDueDateMax = new Date($due_date_max.val());
+
+
+    /* Filter function */
+    var $filteredRows = $rows.filter(function(){
+      var value = false;
+      value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
+      value |= ($(this).find('td').eq(2).text().indexOf(inputStatus) === -1);
+      value |= ($(this).find('td').eq(3).text().indexOf(inputAssignee) === -1);
+      value |= ((new Date($(this).find('td').eq(4).text())) < inputStartDateMin);
+      value |= ((new Date($(this).find('td').eq(4).text())) > inputStartDateMax);
+      value |= ((new Date($(this).find('td').eq(5).text())) < inputDueDateMin);
+      value |= ((new Date($(this).find('td').eq(5).text())) > inputDueDateMax);
+
+      return value;
     });
+
+    /* Clean previous no-result if exist */
+    $table.find('tbody .no-result').remove();
+    /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+    $rows.show();
+    $filteredRows.hide();
+    /* Prepend no-result row if all rows are filtered */
+    if ($filteredRows.length === $rows.length) {
+      $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="12">No tasks found</td></tr>'));
+    }
+  });
 });
 </script>
 {% endblock %}
