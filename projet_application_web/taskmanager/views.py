@@ -5,6 +5,14 @@ from .models import Project, Task, Journal, Status
 from .form import TaskForm
 
 ##
+#Print the home page
+#
+#@param request    WSGIRequest list with all HTTP Request
+##
+def home(request):
+    return render(request, 'home.html')
+
+##
 # Handle 404 Errors
 #
 # @param request    WSGIRequest list with all HTTP Request
@@ -45,15 +53,20 @@ def projects(request):
 def project(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
+    my_tasks = Task.objects.filter(project=project).filter(assignee=user)
     tasks = Task.objects.filter(project=project)
     statuss = Status.objects.all()
     members = project.members.all()
+    
     permission(user, project) # Checks if the user is a member of the project
     return render(request, 'taskmanager/project.html', {'project': project,
+                                                        'my_tasks': my_tasks,
                                                         'tasks': tasks,
                                                         'statuss': statuss,
                                                         'members': members,
                                                         'user': user})
+
+
 
 ##
 # Display one task, details associated and history
@@ -127,3 +140,30 @@ def edittask(request, id):
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
+##
+# Display every task of the user with the
+# associated person responsible for the task
+#
+# @param request    WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def tasks(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user])
+    return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                         'user': user})
+
+##
+# Display every done task of the user with the
+# associated person responsible for the task
+#
+# @param request    WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def tasks_done(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user]).filter(status__name="Terminée")
+    done_only = True
+    return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                         'user': user,
+                                                      'done_only': done_only})
