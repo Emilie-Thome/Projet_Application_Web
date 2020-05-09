@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Project, Task, Journal
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
+from .models import Project, Task, Journal, Status
 from .form import TaskForm
+import csv
+from django.contrib.auth.models import User
 
 ##
 # Handle 404 Errors
@@ -124,3 +126,76 @@ def edittask(request, id):
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
+
+
+
+##
+# export and donwload data
+#
+# @param request     WSGIRequest list with all HTTP Request
+# @param file_type        The type of file chosen
+#
+##
+
+@login_required(login_url='/accounts/login/')
+def download_data(request):
+    projects = Project.objects.all()
+    tasks = Task.objects.all()
+    statuss = Status.objects.all()
+    journals = Journal.objects.all()
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-disposition']='attachment; filename=taskmanager.csv'
+
+    writer = csv.writer(response, delimiter=',')
+
+    #projects
+    writer.writerow(['Project_name', 'Project_members'])
+    """Pour l'instant les membres apparaitront sous la forme d'une liste au format [user1, user2,...]"""
+    for project in projects:
+        members=[]
+        for member in project.members.all():
+            members.append(member.username)
+        writer.writerow([project.name, members])
+
+    writer.writerow([])
+
+    #status
+    writer.writerow(['Status name'])
+    for status in statuss:
+        writer.writerow([status.name])
+
+    writer.writerow([])
+    #tasks
+    writer.writerow(
+        ['Task project',
+         'Task name',
+         'Task description',
+         'Task assignee',
+         'Task start_date',
+         'Task due_date',
+         'Task priority',
+         'Task status'])
+
+    for task in tasks:
+        writer.writerow(
+            [task.project.name,
+             task.name,
+             task.description,
+             task.start_date,
+             task.due_date,
+             task.priority,
+             task.status])
+
+    writer.writerow([])
+
+    #journal
+    writer.writerow(
+        ['Journal date', 'Journal entry', 'Journal author', 'Journal task']
+    )
+
+    for journal in journals:
+        writer.writerow(
+            [journal.date, journal.entry, journal.author, journal.task]
+        )
+    return response
