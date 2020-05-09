@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Project, Task, Journal
+from .models import Project, Task, Journal, Status
 from .form import TaskForm
 
 ##
@@ -54,13 +54,19 @@ def project(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
     my_tasks = Task.objects.filter(project=project).filter(assignee=user)
-    tasks = Task.objects.filter(project=project).exclude(assignee=user)
-
+    tasks = Task.objects.filter(project=project)
+    statuss = Status.objects.all()
+    members = project.members.all()
+    
     permission(user, project) # Checks if the user is a member of the project
     return render(request, 'taskmanager/project.html', {'project': project,
                                                         'my_tasks': my_tasks,
-                                                            'tasks': tasks,
-                                                            'user': user})
+                                                        'tasks': tasks,
+                                                        'statuss': statuss,
+                                                        'members': members,
+                                                        'user': user})
+
+
 
 ##
 # Display one task, details associated and history
