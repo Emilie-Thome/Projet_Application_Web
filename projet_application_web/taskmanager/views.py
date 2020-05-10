@@ -198,6 +198,7 @@ def newproject(request):
         if form.is_valid():
             project = form.save(commit=False)  # Do not save directly in the DB
             project.save()
+            form.save_m2m() # Have to save ManyToManyField manually because of "form.save(commit=False)"
             if not user in project.members.all() :
                 project.members.add(user)
             project.save()
