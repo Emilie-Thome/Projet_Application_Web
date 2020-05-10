@@ -18,7 +18,8 @@
 <link href="https://davidstutz.de/bootstrap-multiselect/docs/css/bootstrap-3.3.2.min.css" rel="stylesheet"/>
 <link href="https://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet"/>
 <script src="https://davidstutz.de/bootstrap-multiselect/docs/js/bootstrap-3.3.2.min.js"></script>
-
+<link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet"/>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 
 <!-- Project Title And Add Task Button -->
 <div class="row" style="padding: 0 0">
@@ -100,9 +101,7 @@
 <!-- Project Tasks With Details And Edit Button In Table -->
 <div class="row">
   <div class="col">
-    <table class="table" id="tasks-table">
-      <thead></thead>
-        
+    <table class="table">
       {% if my_tasks %} <!-- If the user has tasks in this project they will be separated here -->
       <thead>
         <tr>
@@ -136,8 +135,10 @@
         {% endfor %}
       </tbody>
       {% endif %}
-      
-      {% if tasks %} <!-- Other tasks -->
+    </table>
+
+    {% if tasks %} <!-- Other tasks -->
+    <table class="table" id="tasks-table">
       <thead>
         <tr>
           <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
@@ -169,23 +170,24 @@
         </tr>
         {% endfor %}
       </tbody>
+    </table>
       {% endif %}
-    
       {% if not my_tasks and not tasks %} <!-- If no tasks -->
       <h1>No tasks in this project!</h1>
       {% endif %}
-    </table>
   </div>
 </div>
 
 <script>
     $(document).ready(function() {
         $('#statuss').multiselect({
+            buttonWidth: 170,
             nonSelectedText: 'Filter Status...'
         });
 
         $('#assignees').multiselect({
             enableFiltering: true,
+            buttonWidth: 170,
             nonSelectedText: 'Filter Assignees...'
         });
 
@@ -242,6 +244,17 @@
         };
         $(".filters").keyup(myFilter);
         $(".filters").change(myFilter);
+
+        $('#tasks-table').DataTable({
+          "searching": false,
+          "bPaginate": false,
+          "bLengthChange": false,
+          "bInfo": false,
+          "bAutoWidth": false,
+          columnDefs: [
+                  { orderable: false, targets: 6 }
+                  ]
+        });
 
         $(".caret").remove();
     });
