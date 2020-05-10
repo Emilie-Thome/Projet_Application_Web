@@ -179,6 +179,8 @@
             nonSelectedText: 'Filter Assignees...'
         });
 
+        $(".caret").remove();
+
         function myFilter(){
             let $table = $("#tasks-table"),
                 $rows = $table.find('tbody tr');
@@ -202,14 +204,13 @@
 
             /* Filter function */
             let $filteredRows = $rows.filter(function(){
-                let emptyArray = [];
                 let value = false;
                 value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
-                if (inputStatus.length!=0) {
+                if (inputStatus.length!==0) {
                     value |= (inputStatus.indexOf($(this).find('td').eq(2).text()) === -1);
                     console.log(inputStatus.length);
                  }
-                if (inputAssignee.length!=0)
+                if (inputAssignee.length!==0)
                     value |= (inputAssignee.indexOf($(this).find('td').eq(3).text()) === -1);
 
                 value |= ((new Date($(this).find('td').eq(4).text())) < inputStartDateMin);
@@ -229,9 +230,10 @@
             if ($filteredRows.length === $rows.length) {
               $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="12">No tasks found</td></tr>'));
             }
-        };
+        }
         $(".filters").keyup(myFilter);
         $(".filters").change(myFilter);
+
 
         $('#tasks-table').DataTable({
           "searching": false,
@@ -239,12 +241,43 @@
           "bLengthChange": false,
           "bInfo": false,
           "bAutoWidth": false,
-          columnDefs: [
-                  { orderable: false, targets: 6 }
-                  ]
+          "aoColumnDefs" : [
+                  {"bSortable" : false,
+                    "aTargets" : [ 6 ]},
+                  {"sType" : "rankStatus",
+                    "aTargets" : [ 2 ]},
+          ],
         });
 
-        $(".caret").remove();
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+          "rankStatus-pre": function ( a ) {
+            function getRankStatus(name) {
+              var rankNumber;
+              if (name === "Nouvelle"){
+                rankNumber = 5;
+              }
+              else if (name === "En cours"){
+                rankNumber = 4;
+              }
+              else if (name === "En attente") {
+                rankNumber = 3;
+              }
+              else if (name === "Terminée") {
+                rankNumber = 2;
+              }
+              else if (name === "Classée") {
+                rankNumber = 1;
+              }
+              else {
+                rankNumber = 0;
+              }
+              return rankNumber;
+            }
+            var res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h6 class="status">En attente</h6>"
+            return getRankStatus(res);
+          }
+        });
     });
 
 </script>
