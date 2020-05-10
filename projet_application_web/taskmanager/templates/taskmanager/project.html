@@ -246,27 +246,29 @@
                     "aTargets" : [ 6 ]},
                   {"sType" : "rankStatus",
                     "aTargets" : [ 2 ]},
+                  {"sType" : "rankDate",
+                    "aTargets" : [ 4, 5 ]},
           ],
         });
 
 
         jQuery.extend( jQuery.fn.dataTableExt.oSort, {
           "rankStatus-pre": function ( a ) {
-            function getRankStatus(name) {
-              var rankNumber;
-              if (name === "Nouvelle"){
+            function getRankStatus(status) {
+              let rankNumber;
+              if (status === "Nouvelle"){
                 rankNumber = 5;
               }
-              else if (name === "En cours"){
+              else if (status === "En cours"){
                 rankNumber = 4;
               }
-              else if (name === "En attente") {
+              else if (status === "En attente") {
                 rankNumber = 3;
               }
-              else if (name === "Terminée") {
+              else if (status === "Terminée") {
                 rankNumber = 2;
               }
-              else if (name === "Classée") {
+              else if (status === "Classée") {
                 rankNumber = 1;
               }
               else {
@@ -274,8 +276,31 @@
               }
               return rankNumber;
             }
-            var res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h6 class="status">En attente</h6>"
-            return getRankStatus(res);
+            let res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h6 class="status">En attente</h6>"
+            return getRankStatus(res); // 'res' de la forme "En attente"
+          }
+        });
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+          "rankDate-pre": function ( a ) {
+            function getRankDate(date) {
+              const months = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
+
+              let parts = date.split(" ");
+
+              let month = parts[0];
+              if (month.length == 1)
+                month = "0".concat('', month);
+              let num = parts[1].split(",")[0];
+              if (num.length == 1)
+                num = "0".concat('', num);
+              let year = parts[2];
+
+              return parseInt(year.concat('', months.indexOf(month)).concat('',num), 10);
+            }
+            let res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h4 class="date">May 6, 2020</h4>"
+            console.log(getRankDate(res))
+            return getRankDate(res); // 'res' de la forme "May 6, 2020"
           }
         });
     });
