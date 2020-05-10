@@ -12,8 +12,6 @@
 
 <!-- Content -->
 {% block content %}
-
-
 <!-- Multiple Selection Imports -->
 <script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
 <link href="https://davidstutz.de/bootstrap-multiselect/docs/css/bootstrap-3.3.2.min.css" rel="stylesheet"/>
@@ -211,7 +209,6 @@
 
             /* Filter function */
             let $filteredRows = $rows.filter(function(){
-                let emptyArray = [];
                 let value = false;
                 value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
                 if (inputStatus.length!=0) {
