@@ -13,25 +13,25 @@
 <!-- Content -->
 {% block content %}
 
-    <!-- Multiple Selection Imports -->
-    <script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-    <link href="https://davidstutz.de/bootstrap-multiselect/docs/css/bootstrap-3.3.2.min.css" rel="stylesheet"/>
-    <link href="https://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet"/>
-    <script src="https://davidstutz.de/bootstrap-multiselect/docs/js/bootstrap-3.3.2.min.js"></script>
+<!-- Multiple Selection Imports -->
+<script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+<link href="https://davidstutz.de/bootstrap-multiselect/docs/css/bootstrap-3.3.2.min.css" rel="stylesheet"/>
+<link href="https://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet"/>
+<script src="https://davidstutz.de/bootstrap-multiselect/docs/js/bootstrap-3.3.2.min.js"></script>
 
 
-    <!-- Project Title And Add Task Button -->
-    <div class="row" style="padding: 0 0">
-        <div class="col">
-            <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
-            <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-                <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
-                    <span class="glyphicon glyphicon-plus-sign"></span>
-                </a>
-            </button>
-        </div>
+<!-- Project Title And Add Task Button -->
+<div class="row" style="padding: 0 0">
+    <div class="col">
+        <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
+        <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
+            <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+            </a>
+        </button>
     </div>
 </div>
+
 
 
 
@@ -41,9 +41,7 @@
   <div class="col">
     <hr class="my-footer">
     <div class="form-row align-items-center">
-      <div class="form-group col-md-1">
-      </div>
-      <div class="form-group col-md-4">
+      <div class="form-group col-md-5">
         <label for="searchtask">Quick Search :</label>
         <input type="text" class="form-control" id="searchtask" placeholder="Search Task...">
       </div>
@@ -62,8 +60,6 @@
       </div>
     </div>
     <div class="form-row align-items-center">
-      <div class="form-group col-md-1">
-      </div>
       <div class="form-group col-md-2">
         <label for="statuss">Status :</label>
         <select id="statuss" multiple="multiple">
@@ -71,6 +67,8 @@
           <option value="{{ status }}">{{ status }}</option>
           {% endfor %}
         </select>
+      </div>
+      <div class="form-group col-md-1">
       </div>
       <div class="form-group col-md-2">
         <label for="assignees">Assignees :</label>
@@ -183,16 +181,15 @@
 <script>
     $(document).ready(function() {
         $('#statuss').multiselect({
-            buttonWidth: '200px',
             nonSelectedText: 'Filter Status...'
         });
 
         $('#assignees').multiselect({
             enableFiltering: true,
-            buttonWidth: '200px',
             nonSelectedText: 'Filter Assignees...'
         });
-        $(".filters").change(function(){
+
+        function myFilter(){
             let $table = $("#tasks-table"),
                 $rows = $table.find('tbody tr');
 
@@ -218,11 +215,11 @@
                 let emptyArray = [];
                 let value = false;
                 value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
-                if (inputStatus!==emptyArray) {
+                if (inputStatus.length!=0) {
                     value |= (inputStatus.indexOf($(this).find('td').eq(2).text()) === -1);
-                    console.log(inputStatus);
+                    console.log(inputStatus.length);
                  }
-                if (inputAssignee!==emptyArray)
+                if (inputAssignee.length!=0)
                     value |= (inputAssignee.indexOf($(this).find('td').eq(3).text()) === -1);
 
                 value |= ((new Date($(this).find('td').eq(4).text())) < inputStartDateMin);
@@ -242,8 +239,11 @@
             if ($filteredRows.length === $rows.length) {
               $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="12">No tasks found</td></tr>'));
             }
-        });
+        };
+        $(".filters").keyup(myFilter);
+        $(".filters").change(myFilter);
     });
+
 </script>
 
 {% endblock %}
