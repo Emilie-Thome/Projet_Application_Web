@@ -56,7 +56,22 @@
 </table>
 
 <!-- History -->
-<h4 class="display-6" style="font-weight: bold">History</h4>
+<h3 class="display-6" style="font-weight: bold">History</h3>
+<!-- If A Journal Is Added Or Editted -->
+<form action="{% url 'task' task.id %}" method="post">
+    {% csrf_token %}
+    <!-- Fields -->
+    <div class="form-group row" style="color: #007bff; margin-top: 2rem">
+        <div class="col-sm-2 col-form-label">{{ form.entry.label_tag }}</div>
+        {{ form.entry }}
+        <!-- Submit Journal -->
+        <div class="col-sm-1">
+            <button type="submit" class="btn btn-info glyphicon glyphicon-comment"></button>
+        </div>
+    </div>
+</form>
+
+<!-- Current History -->
 <table class="table">
   <tbody>
     {% for journal in journals %}
