@@ -12,6 +12,8 @@
 
 <!-- Content -->
 {% block content %}
+
+<!-- JS Filter And Sort -->
 <script type="text/javascript" src="/static/js/filter_and_sort.js"></script>
 
 <!-- Project Title And Add Task Button -->
@@ -167,5 +169,13 @@
   </div>
 </div>
 
+<!-- Gantt Diagram -->
+<div class="container" id="gantt">
+  <h1 style="text-align: center">Gantt not available... There is a problem</h1>
+  {{ project.name|json_script:"name" }}
+  {{ infos_gantt|json_script:"infos-gantt" }}
+  <!-- JS must be loaded after including information -->
+  <script type="text/javascript" src="/static/js/gantt_diagram.js"></script>
+</div>
 
 {% endblock %}
