@@ -51,7 +51,7 @@
     <div class="form-row align-items-center">
       <div class="form-group col-md-2">
         <label for="statuss">Status :</label>
-        <select id="statuss" multiple="multiple">
+        <select id="statuss" multiple>
           {% for status in statuss %}
           <option value="{{ status }}">{{ status }}</option>
           {% endfor %}
@@ -61,7 +61,7 @@
       </div>
       <div class="form-group col-md-2">
         <label for="assignees">Assignees :</label>
-        <select id="assignees"  multiple="multiple">
+        <select id="assignees"  multiple>
           {% for member in members %}
           <option value="{{ member }}">{{ member }}</option>
           {% endfor %}
@@ -179,7 +179,7 @@
             nonSelectedText: 'Filter Assignees...'
         });
 
-        $(".caret").remove();
+        $(".caret").remove(); // because there are two caret otherwise
 
         function myFilter(){
             let $table = $("#tasks-table"),
