@@ -12,223 +12,298 @@
 
 <!-- Content -->
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
-    <!-- Project Title And Add Task Button -->
-    <div class="row" style="padding: 0 0">
-        <div class="col">
-            <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
-            <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-                <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
-                    <span class="glyphicon glyphicon-plus-sign"></span>
-                </a>
-            </button>
-        </div>
+<!-- Project Title And Add Task Button -->
+<div class="row" style="padding: 0 0">
+    <div class="col">
+        <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
+        <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
+            <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+            </a>
+        </button>
     </div>
+</div>
+
+<!-- Filters -->
+<div class="row filters">
+  <div class="col">
+    <hr class="my-footer">
+    <div class="form-row align-items-center">
+      <div class="form-group col-md-5">
+        <label for="searchtask">Quick Search :</label>
+        <input type="text" class="form-control" id="searchtask" placeholder="Search Task...">
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-1">
+        <label class="col-form-label">Start date :</label>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="start-date-min">From </label>
+        <input type="date" class="form-control" id="start-date-min">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="start-date-max"> To </label>
+        <input type="date" class="form-control" id="start-date-max">
+      </div>
     </div>
+    <div class="form-row align-items-center">
+      <div class="form-group col-md-2">
+        <label for="statuss">Status :</label>
+        <select id="statuss" multiple>
+          {% for status in statuss %}
+          <option value="{{ status }}">{{ status }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="assignees">Assignees :</label>
+        <select id="assignees"  multiple>
+          {% for member in members %}
+          <option value="{{ member }}">{{ member }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-1">
+        <label class="col-form-label">Due date :</label>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="due-date-min">From </label>
+        <input type="date" class="form-control" id="due-date-min">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="due-date-max"> To </label>
+        <input type="date" class="form-control" id="due-date-max">
+      </div>
+    </div>
+    <br>
+    <hr class="my-footer">
+  </div>
+</div>
 
+<!-- Project Tasks With Details And Edit Button In Table -->
+<div class="row">
+  <div class="col">
+    <table class="table">
+      {% if my_tasks %} <!-- If the user has tasks in this project they will be separated here -->
+      <thead>
+        <tr>
+          <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+          <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
+          <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
+          <th scope="col" class="col-sm-1"></th>
+        </tr>
+      </thead>
+      <tbody>
 
-    <div class="container-fluid">
+        {% for task in my_tasks %}
+        <tr>
+          <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+          <td><h4><a href="{% url 'task' task.id %}"
+                     style="white-space: nowrap; width: 1%">{{ task }}</a>
+            </h4></td>
+          <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+          <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+          <td><h4 class="date">{{ task.start_date }}</h4></td>
+          <td><h4 class="date">{{ task.due_date }}</h4></td>
+          <td><h4>
+            <a href="{% url 'edittask' task.id %}" class="btn-block">
+              <span class="glyphicon glyphicon-edit"></span>
+            </a></h4>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      {% endif %}
+    </table>
 
-        <!-- Filters -->
-        <div class="row filters">
-            <div class="col">
-                <hr class="my-footer">
-                <div class="form-row align-items-center">
-                    <div class="form-group col-md-1">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="searchtask">Quick Search :</label>
-                        <input type="text" class="form-control" id="searchtask" placeholder="Search Task...">
-                    </div>
-                    <div class="form-group col-md-1">
-                    </div>
-                    <div class="form-group col-md-1">
-                        <label class="col-form-label">Start date :</label>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="start-date-min">From </label>
-                        <input type="date" class="form-control" id="start-date-min">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="start-date-max"> To </label>
-                        <input type="date" class="form-control" id="start-date-max">
-                    </div>
-                </div>
-                <div class="form-row align-items-center">
-                    <div class="form-group col-md-1">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="statuss">Status</label>
-                        <select class="form-control" id="statuss">
-                            <option value="" selected>-----</option>
-                            {% for status in statuss %}
-                                <option value="{{ status }}">{{ status }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="assignees">Assignees</label>
-                        <select class="form-control" id="assignees">
-                            <option value="" selected>-----</option>
-                            {% for member in members %}
-                                <option value="{{ member }}">{{ member }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group col-md-1">
-                    </div>
-                    <div class="form-group col-md-1">
-                        <label class="col-form-label">Due date :</label>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="due-date-min">From </label>
-                        <input type="date" class="form-control" id="due-date-min">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="due-date-max"> To </label>
-                        <input type="date" class="form-control" id="due-date-max">
-                    </div>
-                </div>
-                <br>
-                <hr class="my-footer">
-            </div>
-        </div>
+    {% if tasks %} <!-- Other tasks -->
+    <table class="table" id="tasks-table">
+      <thead>
+        <tr>
+          <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+          <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
+          <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
+          <th scope="col" class="col-sm-1"></th>
+        </tr>
+      </thead>
+      <tbody>
 
-        <!-- Project Tasks With Details And Edit Button In Table -->
-        <div class="row">
+        {% for task in tasks %}
+        <tr>
+          <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+          <td><h4><a href="{% url 'task' task.id %}"
+                     style="white-space: nowrap; width: 1%">{{ task }}</a>
+            </h4></td>
+          <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+          <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+          <td><h4 class="date">{{ task.start_date }}</h4></td>
+          <td><h4 class="date">{{ task.due_date }}</h4></td>
+          <td><h4>
+            <a href="{% url 'edittask' task.id %}" class="btn-block">
+              <span class="glyphicon glyphicon-edit"></span>
+            </a></h4>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+      {% endif %}
+      {% if not my_tasks and not tasks %} <!-- If no tasks -->
+      <h1>No tasks in this project!</h1>
+      {% endif %}
+  </div>
+</div>
 
-            <div class="col">
-                <table class="table" id="tasks-table">
-                    <thead></thead>
+<script>
+    $(document).ready(function() {
+        $('#statuss').multiselect({
+            buttonWidth: 170,
+            nonSelectedText: 'Filter Status...'
+        });
 
-                    {% if my_tasks %} <!-- If the user has tasks in this project they will be separated here -->
-                        <thead>
-                        <tr>
-                            <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
-                            <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
-                            <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
-                            <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
-                            <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
-                            <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
-                            <th scope="col" class="col-sm-1"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
+        $('#assignees').multiselect({
+            enableFiltering: true,
+            buttonWidth: 170,
+            nonSelectedText: 'Filter Assignees...'
+        });
 
-                        {% for task in my_tasks %}
-                            <tr>
-                                <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
-                                <td><h4><a href="{% url 'task' task.id %}"
-                                           style="white-space: nowrap; width: 1%">{{ task }}</a>
-                                </h4></td>
-                                <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
-                                <td><h5 class="assignee">{{ task.assignee }}</h5></td>
-                                <td><h4 class="date">{{ task.start_date }}</h4></td>
-                                <td><h4 class="date">{{ task.due_date }}</h4></td>
-                                <td><h4>
-                                    <a href="{% url 'edittask' task.id %}" class="btn-block">
-                                        <span class="glyphicon glyphicon-edit"></span>
-                                    </a></h4>
-                                </td>
-                            </tr>
+        $(".caret").remove(); // because there are two caret otherwise
 
-                        {% endfor %}
-                        </tbody>
-                    {% endif %}
+        function myFilter(){
+            let $table = $("#tasks-table"),
+                $rows = $table.find('tbody tr');
 
-                    {% if tasks %} <!-- Other tasks -->
-                        <thead>
-                        <tr>
-                            <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
-                            <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
-                            <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
-                            <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
-                            <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
-                            <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
-                            <th scope="col" class="col-sm-1"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
+            /* Useful DOM data and selectors */
+            let $searchtask = $("#searchtask"),
+                    $statuss = $("#statuss"),
+                    $assignee = $("#assignees"),
+                    $start_date_min = $("#start-date-min"),
+                    $start_date_max = $("#start-date-max"),
+                    $due_date_min = $("#due-date-min"),
+                    $due_date_max = $("#due-date-max");
 
-                        {% for task in tasks %}
-                            <tr>
-                                <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
-                                <td><h4><a href="{% url 'task' task.id %}"
-                                           style="white-space: nowrap; width: 1%">{{ task }}</a>
-                                </h4></td>
-                                <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
-                                <td><h5 class="assignee">{{ task.assignee }}</h5></td>
-                                <td><h4 class="date">{{ task.start_date }}</h4></td>
-                                <td><h4 class="date">{{ task.due_date }}</h4></td>
-                                <td><h4>
-                                    <a href="{% url 'edittask' task.id %}" class="btn-block">
-                                        <span class="glyphicon glyphicon-edit"></span>
-                                    </a></h4>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    {% endif %}
+            let inputTask = $searchtask.val().toLowerCase(),
+                    inputStatus = $statuss.val(),
+                    inputAssignee = $assignee.val(),
+                    inputStartDateMin = new Date($start_date_min.val()),
+                    inputStartDateMax = new Date($start_date_max.val()),
+                    inputDueDateMin = new Date($due_date_min.val()),
+                    inputDueDateMax = new Date($due_date_max.val());
 
-                    {% if not my_tasks and not tasks %} <!-- If no tasks -->
-                        <h1>No tasks in this project!</h1>
-                    {% endif %}
-                </table>
-            </div>
-        </div>
+            /* Filter function */
+            let $filteredRows = $rows.filter(function(){
+                let value = false;
+                value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
+                if (inputStatus.length!==0) {
+                    value |= (inputStatus.indexOf($(this).find('td').eq(2).text()) === -1);
+                    console.log(inputStatus.length);
+                 }
+                if (inputAssignee.length!==0)
+                    value |= (inputAssignee.indexOf($(this).find('td').eq(3).text()) === -1);
 
-        <script>
-            $(document).ready(function () {
-                $(".filters").change(function () {
-                    var $table = $("#tasks-table"),
-                        $rows = $table.find('tbody tr');
+                value |= ((new Date($(this).find('td').eq(4).text())) < inputStartDateMin);
+                value |= ((new Date($(this).find('td').eq(4).text())) > inputStartDateMax);
+                value |= ((new Date($(this).find('td').eq(5).text())) < inputDueDateMin);
+                value |= ((new Date($(this).find('td').eq(5).text())) > inputDueDateMax);
 
-                    /* Useful DOM data and selectors */
-                    var $searchtask = $("#searchtask"),
-                        $statuss = $("#statuss"),
-                        $assignee = $("#assignees"),
-                        $start_date_min = $("#start-date-min"),
-                        $start_date_max = $("#start-date-max"),
-                        $due_date_min = $("#due-date-min"),
-                        $due_date_max = $("#due-date-max");
-
-                    var inputTask = $searchtask.val().toLowerCase(),
-                        inputStatus = $statuss.val(),
-                        inputAssignee = $assignee.val(),
-                        inputStartDateMin = new Date($start_date_min.val()),
-                        inputStartDateMax = new Date($start_date_max.val()),
-                        inputDueDateMin = new Date($due_date_min.val()),
-                        inputDueDateMax = new Date($due_date_max.val());
-
-
-                    /* Filter function */
-                    var $filteredRows = $rows.filter(function () {
-                        var value = false;
-                        value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
-                        value |= ($(this).find('td').eq(2).text().indexOf(inputStatus) === -1);
-                        value |= ($(this).find('td').eq(3).text().indexOf(inputAssignee) === -1);
-                        value |= ((new Date($(this).find('td').eq(4).text())) < inputStartDateMin);
-                        value |= ((new Date($(this).find('td').eq(4).text())) > inputStartDateMax);
-                        value |= ((new Date($(this).find('td').eq(5).text())) < inputDueDateMin);
-                        value |= ((new Date($(this).find('td').eq(5).text())) > inputDueDateMax);
-
-                        return value;
-                    });
-
-                    /* Clean previous no-result if exist */
-                    $table.find('tbody .no-result').remove();
-                    /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
-                    $rows.show();
-                    $filteredRows.hide();
-                    /* Prepend no-result row if all rows are filtered */
-                    if ($filteredRows.length === $rows.length) {
-                        $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="12">No tasks found</td></tr>'));
-                    }
-                });
+                return value;
             });
-        </script>
-    </div>
+
+            /* Clean previous no-result if exist */
+            $table.find('tbody .no-result').remove();
+            /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+            $rows.show();
+            $filteredRows.hide();
+            /* Prepend no-result row if all rows are filtered */
+            if ($filteredRows.length === $rows.length) {
+              $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="12">No tasks found</td></tr>'));
+            }
+        }
+        $(".filters").keyup(myFilter);
+        $(".filters").change(myFilter);
+
+
+        $('#tasks-table').DataTable({
+          "searching": false,
+          "bPaginate": false,
+          "bLengthChange": false,
+          "bInfo": false,
+          "bAutoWidth": false,
+          "aoColumnDefs" : [
+                  {"bSortable" : false,
+                    "aTargets" : [ 6 ]},
+                  {"sType" : "rankStatus",
+                    "aTargets" : [ 2 ]},
+                  {"sType" : "rankDate",
+                    "aTargets" : [ 4, 5 ]},
+          ],
+        });
+
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+          "rankStatus-pre": function ( a ) {
+            function getRankStatus(status) {
+              let rankNumber;
+              if (status === "Nouvelle"){
+                rankNumber = 5;
+              }
+              else if (status === "En cours"){
+                rankNumber = 4;
+              }
+              else if (status === "En attente") {
+                rankNumber = 3;
+              }
+              else if (status === "Terminée") {
+                rankNumber = 2;
+              }
+              else if (status === "Classée") {
+                rankNumber = 1;
+              }
+              else {
+                rankNumber = 0;
+              }
+              return rankNumber;
+            }
+            let res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h6 class="status">En attente</h6>"
+            return getRankStatus(res); // 'res' de la forme "En attente"
+          }
+        });
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+          "rankDate-pre": function ( a ) {
+            function getRankDate(date) {
+              const months = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
+
+              let parts = date.split(" ");
+
+              let month = parts[0];
+              if (month.length == 1)
+                month = "0".concat('', month);
+              let num = parts[1].split(",")[0];
+              if (num.length == 1)
+                num = "0".concat('', num);
+              let year = parts[2];
+
+              return parseInt(year.concat('', months.indexOf(month)).concat('',num), 10);
+            }
+            let res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h4 class="date">May 6, 2020</h4>"
+            console.log(getRankDate(res))
+            return getRankDate(res); // 'res' de la forme "May 6, 2020"
+          }
+        });
+    });
+
+</script>
 {% endblock %}
