@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from .models import Project, Task, Journal, Status
 from .form import TaskForm, JournalForm
 
@@ -79,7 +80,7 @@ def project(request, id):
 def task(request, id):
     user = request.user
     task = get_object_or_404(Task, id=id)
-    journals = Journal.objects.filter(task=task)
+    journals = Journal.objects.filter(task=task).order_by('-date')
 
     permission(user, task.project) # Checks if the user is a member of the project
 
@@ -87,10 +88,16 @@ def task(request, id):
     if request.method == 'POST':
         form = JournalForm(request.POST)
         if form.is_valid():
+
+            task.modified = timezone.now() #On modifie l'attribut temporel modified
+            task.save()
+
             journal = form.save(commit=False) # Do not save directly in the DB
             journal.task = task # The project is not in the form because it is already defined
             journal.author = user
+            journal.date = timezone.now()
             journal.save()
+
             return redirect('task', id=task.id)
     else:
         form = JournalForm()
@@ -182,3 +189,11 @@ def tasks_done(request):
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
                                                          'user': user,
                                                       'done_only': done_only})
+
+def activities(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user]).order_by('-modified')
+    journals = Journal.objects.filter(task__in=tasks).order_by('-date')
+    return render(request, 'taskmanager/activities.html', {'tasks': tasks,
+                                                      'user': user,
+                                                           'journals': journals})
