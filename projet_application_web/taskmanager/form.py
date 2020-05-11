@@ -4,7 +4,7 @@ from .models import Task
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ('project',)  # The project is already known
+        exclude = ('project','modified',)  # The project is already known
                                 # as a task is added to an existing
                                 # project in the project page
 
