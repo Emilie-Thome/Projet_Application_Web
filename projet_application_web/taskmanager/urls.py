@@ -7,6 +7,7 @@ urlpatterns = [
     path('task/<int:id>', views.task, name='task'),
     path('<int:id>/newtask', views.newtask, name='newtask'),
     path('task/<int:id>/edittask', views.edittask, name='edittask'), # Usually edit is added after task id
-    path('download_csv/', views.download_data_csv, name='download_csv'),
-    path('download_xls/', views.download_data_xls, name='download_xls')
+    path('download/csv', views.download_data_csv, name='download_csv'),
+    path('download/xls', views.download_data_xls, name='download_xls'),
+    path('download/xml', views.download_data_xml, name='download_xml'),
 ]

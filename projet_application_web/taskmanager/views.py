@@ -5,6 +5,7 @@ from .models import Project, Task, Journal, Status
 from .form import TaskForm
 import csv
 import xlwt
+import xml.etree.ElementTree as ET
 from django.contrib.auth.models import User
 
 ##
@@ -319,3 +320,113 @@ def download_data_xls(request):
     wb.save(response)
     return response
 
+##
+# export and donwload data into a xml file
+#
+# @param request     WSGIRequest list with all HTTP Request
+#
+##
+@login_required(login_url='/accounts/login/')
+def download_data_xml(request):
+    users = User.objects.all()
+    projects = Project.objects.all()
+    tasks = Task.objects.all()
+    statuss = Status.objects.all()
+    journals = Journal.objects.all()
+
+    response = HttpResponse(content_type='txt/xml')
+    response['Content-disposition'] = 'attachment; filename=taskmanager.xml'
+
+    d = ET.Element('data')
+
+    #Users
+    u = ET.SubElement(d, 'Users')
+
+    for user in users:
+        us = ET.SubElement(u, 'user')
+        us.set("id", user.id.__str__())
+        username = ET.SubElement(us, 'username')
+        username.text = user.username
+        first_name = ET.SubElement(us, 'first_name')
+        first_name.text = user.first_name
+        last_name = ET.SubElement(us, 'last_name')
+        last_name.text = user.last_name
+        email = ET.SubElement(us, 'email')
+        email.text = user.email
+
+    #Projects
+    p = ET.SubElement(d, 'Projects')
+
+    for project in projects:
+        pro = ET.SubElement(p, 'project')
+        pro.set("id", project.id.__str__())
+        name = ET.SubElement(pro,"name")
+        name.text = project.name
+        for member in project.members.all():
+            mem = ET.SubElement(pro, 'member')
+            mem.set("id", member.id.__str__())
+            username = ET.SubElement(mem, 'username')
+            username.text = member.username
+
+    #Tasks
+    t = ET.SubElement(d, 'Tasks')
+
+    for task in tasks:
+        ta = ET.SubElement(t,"task")
+        ta.set("id", task.id.__str__())
+        project = ET.SubElement(ta,"project")
+        project.set("id", task.project.id.__str__())
+        pname = ET.SubElement(project,"name")
+        pname.text = task.project.name
+        name = ET.SubElement(ta, "name")
+        name.text = task.name
+        description = ET.SubElement(ta,"description")
+        description.text = task.description
+        assignee = ET.SubElement(pro, 'assignee')
+        assignee.set("id", task.assignee.id.__str__())
+        username = ET.SubElement(mem, 'username')
+        username.text = task.assignee.username
+        start_date = ET.SubElement(ta,"start_date")
+        start_date.text = task.start_date.__str__()
+        due_date = ET.SubElement(ta,"due_date")
+        due_date.text = task.due_date.__str__()
+        priority = ET.SubElement(ta,"priority")
+        priority.text = task.priority.__str__()
+        sta = ET.SubElement(ta,"status")
+        sta.set("id", task.status.id.__str__())
+        sname = ET.SubElement(sta, "name")
+        sname.text = task.status.name
+
+    #Status
+    s = ET.SubElement(d, 'Status')
+
+    for status in statuss:
+        sta = ET.SubElement(s,"status")
+        sta.set("id",status.id.__str__())
+        name = ET.SubElement(sta,"name")
+        name.text = status.name
+
+    #Journal
+    j = ET.SubElement(d, 'Journal')
+
+    for journal in journals:
+        jou = ET.SubElement(j,"journal")
+        jou.set("id", journal.id.__str__())
+        date = ET.SubElement(jou,"date")
+        date.text = journal.date.__str__()
+        entry = ET.SubElement(jou,"entry")
+        entry.text = journal.entry
+        author = ET.SubElement(jou,"author")
+        author.set("id", journal.author.id.__str__())
+        username = ET.SubElement(author, "username")
+        username.text = journal.author.username
+        task = ET.SubElement(jou,"task")
+        task.set("id", journal.task.id.__str__())
+        tname = ET.SubElement(task, "name")
+        tname.text = journal.task.name
+
+
+    tree =  ET.ElementTree(d)
+    tree.write(response)
+
+    return response
