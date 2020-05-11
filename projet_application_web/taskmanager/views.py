@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Project, Task, Journal, Status
-from .form import TaskForm, JournalForm
+from .form import TaskForm, JournalForm, ProjectForm
 
 ##
 #Print the home page
@@ -182,3 +183,28 @@ def tasks_done(request):
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
                                                          'user': user,
                                                       'done_only': done_only})
+
+##
+# Add a project
+#
+# @param request     WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def newproject(request):
+    user = request.user
+
+    if request.method == "POST":
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)  # Do not save directly in the DB
+            project.save()
+            form.save_m2m() # Have to save ManyToManyField manually because of "form.save(commit=False)"
+            if not user in project.members.all() :
+                project.members.add(user)
+            project.save()
+            return redirect('project', id=project.id)
+    else:
+        form = ProjectForm()
+
+    return render(request, 'taskmanager/newproject.html', {'form': form,
+                                                           'user': user})

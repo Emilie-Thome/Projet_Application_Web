@@ -9,4 +9,5 @@ urlpatterns = [
     path('task/<int:id>/edittask', views.edittask, name='edittask'), # Usually edit is added after task id
     path('tasks', views.tasks, name='tasks'),
     path('tasks_done', views.tasks_done, name="tasks_done"),
+    path('newproject', views.newproject, name='newproject'),
 ]
