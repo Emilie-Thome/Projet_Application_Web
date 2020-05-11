@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Project, Task, Journal
-from .form import TaskForm
+from .models import Project, Task, Journal, Status
+from .form import TaskForm, JournalForm
 
 ##
 #Print the home page
@@ -54,16 +54,23 @@ def project(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
     my_tasks = Task.objects.filter(project=project).filter(assignee=user)
-    tasks = Task.objects.filter(project=project).exclude(assignee=user)
-
+    tasks = Task.objects.filter(project=project)
+    statuss = Status.objects.all()
+    members = project.members.all()
+    
     permission(user, project) # Checks if the user is a member of the project
     return render(request, 'taskmanager/project.html', {'project': project,
                                                         'my_tasks': my_tasks,
-                                                            'tasks': tasks,
-                                                            'user': user})
+                                                        'tasks': tasks,
+                                                        'statuss': statuss,
+                                                        'members': members,
+                                                        'user': user})
+
+
 
 ##
 # Display one task, details associated and history
+# History can be added
 #
 # @param request     WSGIRequest list with all HTTP Request
 # @param             id The task's ID
@@ -75,9 +82,23 @@ def task(request, id):
     journals = Journal.objects.filter(task=task)
 
     permission(user, task.project) # Checks if the user is a member of the project
-    return render(request, 'taskmanager/task.html', {'task': task,
-                                                         'journals': journals,
-                                                         'user': user})
+
+    ''' New journal entry can always be posted, no specific view '''
+    if request.method == 'POST':
+        form = JournalForm(request.POST)
+        if form.is_valid():
+            journal = form.save(commit=False) # Do not save directly in the DB
+            journal.task = task # The project is not in the form because it is already defined
+            journal.author = user
+            journal.save()
+            return redirect('task', id=task.id)
+    else:
+        form = JournalForm()
+
+    return render(request, 'taskmanager/task.html', {'form': form,
+                                                     'task': task,
+                                                     'journals': journals,
+                                                     'user': user})
 
 ##
 # Add a new task to the project

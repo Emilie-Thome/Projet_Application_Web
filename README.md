@@ -1,4 +1,22 @@
 # Projet_Application_Web
+## Sujet du projet de groupe
+#### 1. Objectif
+
+L'objectif de cette partie du cours est de mobiliser les différentes techniques vues dans les séances précédentes pour compléter les fonctionnalités principales de l'application Calend-me.
+Le travail se fera en groupe pour permettre à la fois d'avancer plus vite, d'expérimenter le travail de groupe, et d'initier émulation et entraide au sein du groupe.
+
+#### 2. Liste des fonctionnalités à ajouter
+
+Il s'agit d'ajouter à l'application les fonctionnalités suivantes :
+
+    F1 : visualisation de toutes les données saisies.
+    F2 : filtrage et tri dans la liste des tâches suivant les différents attributs.
+    F3 : export des données dans un fichier dans un ou plusieurs formats choisis : csv, json, xml, etc.
+    F4 : l'ajout de graphes des données pourrait rapporter des points de bonus.
+
+Ces fonctionnalités devront être accessibles via un menu.
+
+
 ## Sujet du projet individuel
 #### 1. Objectif
 
