@@ -12,13 +12,6 @@
 
 <!-- Content -->
 {% block content %}
-<!-- Multiple Selection Imports -->
-<script src="https://davidstutz.de/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-<link href="https://davidstutz.de/bootstrap-multiselect/docs/css/bootstrap-3.3.2.min.css" rel="stylesheet"/>
-<link href="https://davidstutz.de/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet"/>
-<script src="https://davidstutz.de/bootstrap-multiselect/docs/js/bootstrap-3.3.2.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
 <!-- Project Title And Add Task Button -->
 <div class="row" style="padding: 0 0">
@@ -58,7 +51,7 @@
     <div class="form-row align-items-center">
       <div class="form-group col-md-2">
         <label for="statuss">Status :</label>
-        <select id="statuss" multiple="multiple">
+        <select id="statuss" multiple>
           {% for status in statuss %}
           <option value="{{ status }}">{{ status }}</option>
           {% endfor %}
@@ -68,7 +61,7 @@
       </div>
       <div class="form-group col-md-2">
         <label for="assignees">Assignees :</label>
-        <select id="assignees"  multiple="multiple">
+        <select id="assignees"  multiple>
           {% for member in members %}
           <option value="{{ member }}">{{ member }}</option>
           {% endfor %}
@@ -186,6 +179,8 @@
             nonSelectedText: 'Filter Assignees...'
         });
 
+        $(".caret").remove(); // because there are two caret otherwise
+
         function myFilter(){
             let $table = $("#tasks-table"),
                 $rows = $table.find('tbody tr');
@@ -211,11 +206,11 @@
             let $filteredRows = $rows.filter(function(){
                 let value = false;
                 value |= ($(this).find('td').eq(1).text().toLowerCase().indexOf(inputTask) === -1);
-                if (inputStatus.length!=0) {
+                if (inputStatus.length!==0) {
                     value |= (inputStatus.indexOf($(this).find('td').eq(2).text()) === -1);
                     console.log(inputStatus.length);
                  }
-                if (inputAssignee.length!=0)
+                if (inputAssignee.length!==0)
                     value |= (inputAssignee.indexOf($(this).find('td').eq(3).text()) === -1);
 
                 value |= ((new Date($(this).find('td').eq(4).text())) < inputStartDateMin);
@@ -235,9 +230,10 @@
             if ($filteredRows.length === $rows.length) {
               $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="12">No tasks found</td></tr>'));
             }
-        };
+        }
         $(".filters").keyup(myFilter);
         $(".filters").change(myFilter);
+
 
         $('#tasks-table').DataTable({
           "searching": false,
@@ -245,12 +241,68 @@
           "bLengthChange": false,
           "bInfo": false,
           "bAutoWidth": false,
-          columnDefs: [
-                  { orderable: false, targets: 6 }
-                  ]
+          "aoColumnDefs" : [
+                  {"bSortable" : false,
+                    "aTargets" : [ 6 ]},
+                  {"sType" : "rankStatus",
+                    "aTargets" : [ 2 ]},
+                  {"sType" : "rankDate",
+                    "aTargets" : [ 4, 5 ]},
+          ],
         });
 
-        $(".caret").remove();
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+          "rankStatus-pre": function ( a ) {
+            function getRankStatus(status) {
+              let rankNumber;
+              if (status === "Nouvelle"){
+                rankNumber = 5;
+              }
+              else if (status === "En cours"){
+                rankNumber = 4;
+              }
+              else if (status === "En attente") {
+                rankNumber = 3;
+              }
+              else if (status === "Terminée") {
+                rankNumber = 2;
+              }
+              else if (status === "Classée") {
+                rankNumber = 1;
+              }
+              else {
+                rankNumber = 0;
+              }
+              return rankNumber;
+            }
+            let res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h6 class="status">En attente</h6>"
+            return getRankStatus(res); // 'res' de la forme "En attente"
+          }
+        });
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+          "rankDate-pre": function ( a ) {
+            function getRankDate(date) {
+              const months = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
+
+              let parts = date.split(" ");
+
+              let month = parts[0];
+              if (month.length == 1)
+                month = "0".concat('', month);
+              let num = parts[1].split(",")[0];
+              if (num.length == 1)
+                num = "0".concat('', num);
+              let year = parts[2];
+
+              return parseInt(year.concat('', months.indexOf(month)).concat('',num), 10);
+            }
+            let res = a.split(">")[1].split("<")[0]; // 'a' de la forme "<h4 class="date">May 6, 2020</h4>"
+            console.log(getRankDate(res))
+            return getRankDate(res); // 'res' de la forme "May 6, 2020"
+          }
+        });
     });
 
 </script>

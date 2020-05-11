@@ -53,7 +53,7 @@ hr.my-footer {margin-top: 0;
 
 .btn-block {color: #007bff;}
 
-.btn {float: right;
+.btn-log {float: right;
   background-color:#007bff}
 
 .btn-edit {position: relative;
@@ -74,15 +74,3 @@ hr.my-footer {margin-top: 0;
   margin-bottom: 0;
   color: darkred;}
 
-table.dataTable thead .sorting:after,
-table.dataTable thead .sorting:before,
-table.dataTable thead .sorting_asc:after,
-table.dataTable thead .sorting_asc:before,
-table.dataTable thead .sorting_asc_disabled:after,
-table.dataTable thead .sorting_asc_disabled:before,
-table.dataTable thead .sorting_desc:after,
-table.dataTable thead .sorting_desc:before,
-table.dataTable thead .sorting_desc_disabled:after,
-table.dataTable thead .sorting_desc_disabled:before {
-bottom: .5em;
-}
