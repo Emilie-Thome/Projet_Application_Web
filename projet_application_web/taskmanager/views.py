@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Project, Task, Journal, Status
 from .form import TaskForm
 import csv
+import xlwt
 from django.contrib.auth.models import User
 
 ##
@@ -130,15 +131,13 @@ def edittask(request, id):
 
 
 ##
-# export and donwload data
+# export and donwload data into a csv file
 #
 # @param request     WSGIRequest list with all HTTP Request
-# @param file_type        The type of file chosen
 #
 ##
-
 @login_required(login_url='/accounts/login/')
-def download_data(request):
+def download_data_csv(request):
     projects = Project.objects.all()
     tasks = Task.objects.all()
     statuss = Status.objects.all()
@@ -199,3 +198,124 @@ def download_data(request):
             [journal.date, journal.entry, journal.author, journal.task]
         )
     return response
+
+##
+# export and donwload data into a xls file
+#
+# @param request     WSGIRequest list with all HTTP Request
+#
+##
+@login_required(login_url='/accounts/login/')
+def download_data_xls(request):
+    users = User.objects.all()
+    projects = Project.objects.all()
+    tasks = Task.objects.all()
+    statuss = Status.objects.all()
+    journals = Journal.objects.all()
+
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-disposition'] = 'attachment; filename=taskmanager.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    style = xlwt.Style.easyxf(num_format_str="dd/mm/yy")
+    #Users
+    wu = wb.add_sheet("Users")
+
+    row = 0
+    fields = ["username",
+              "first_name",
+              "last_name",
+              "email"]
+
+    for i in range(len(fields)):
+        wu.write(row, i, fields[i])
+
+    for user in users:
+        row +=1
+        wu.write(row, 0, user.username)
+        wu.write(row, 1, user.first_name)
+        wu.write(row, 2, user.last_name)
+        wu.write(row, 3, user.email)
+
+
+    #Projects
+    wp = wb.add_sheet("Projects")
+
+    row=0
+    fields=["name",
+            "members"]
+    for i in range(len(fields)):
+        wp.write(row,i,fields[i])
+
+    for project in projects:
+        row+=1
+        wp.write(row,0,project.name)
+        col=0
+        for member in project.members.all():
+            col+=1
+            wp.write(row,col, member.username)
+
+
+    #Tasks
+    wt = wb.add_sheet("Tasks")
+
+    row=0
+    fields=['project',
+         'name',
+         'description',
+         'assignee',
+         'start_date',
+         'due_date',
+         'priority',
+         'status']
+
+    for i in range(len(fields)):
+        wt.write(row,i,fields[i])
+
+    for task in tasks:
+        row+=1
+        wt.write(row, 0, task.project.name)
+        wt.write(row, 1, task.name)
+        wt.write(row, 2, task.description)
+        wt.write(row, 3, task.assignee.username)
+        wt.write(row, 4, task.start_date, style)
+        wt.write(row, 5, task.due_date, style)
+        wt.write(row, 6, task.priority)
+        wt.write(row, 7, task.status.name)
+
+
+     #Status
+    ws = wb.add_sheet("Status")
+
+    row=0
+    fields=['name']
+    for i in range(len(fields)):
+        ws.write(row,i,fields[i])
+
+    for status in statuss:
+        row+=1
+        ws.write(row,0,status.name)
+
+
+    #Journal
+    wj = wb.add_sheet("Journal")
+    row=0
+    fields=['date',
+            'entry',
+            'author',
+            'task']
+
+    for i in range(len(fields)):
+        wj.write(row,i,fields[i])
+
+    for journal in journals:
+        row+=1
+        wj.write(row,0,journal.date.strftime("%Y-%m-%d %H:%M"), style)
+        wj.write(row,1,journal.entry)
+        wj.write(row,2,journal.author.username)
+        wj.write(row,3,journal.task.name)
+
+
+    wb.save(response)
+    return response
+
