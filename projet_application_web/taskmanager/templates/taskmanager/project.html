@@ -31,7 +31,6 @@
 <!-- Filters -->
 <div class="row filters">
   <div class="col">
-    <hr class="my-footer">
     <div class="form-row align-items-center">
       <div class="form-group col-md-5">
         <label for="searchtask">Quick Search :</label>
@@ -85,7 +84,6 @@
       </div>
     </div>
     <br>
-    <hr class="my-footer">
   </div>
 </div>
 
@@ -170,12 +168,20 @@
 </div>
 
 <!-- Gantt Diagram -->
-<div class="container" id="gantt">
-  <h1 style="text-align: center">Gantt not available... There is a problem</h1>
-  {{ project.name|json_script:"name" }}
-  {{ infos_gantt|json_script:"infos-gantt" }}
-  <!-- JS must be loaded after including information -->
-  <script type="text/javascript" src="/static/js/gantt_diagram.js"></script>
+<div class="row">
+  <div class="col">
+    <div class="container">
+      <h1 class="display-4">Gantt Diagram</h1>
+    </div>
+  </div>
+  <div class="col">
+    <div class="container" id="gantt">
+      <h1 style="text-align: center">Gantt not available... There is a problem</h1>
+      {{ project.name|json_script:"name" }}
+      {{ infos_gantt|json_script:"infos-gantt" }}
+      <!-- JS must be loaded after including information -->
+      <script type="text/javascript" src="/static/js/gantt_diagram.js"></script>
+    </div>
+  </div>
 </div>
-
 {% endblock %}

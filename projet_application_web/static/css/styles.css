@@ -74,3 +74,5 @@ hr.my-footer {margin-top: 0;
   margin-bottom: 0;
   color: darkred;}
 
+table.dataTable.no-footer{border-bottom:white}
+table.dataTable thead th,table.dataTable thead td{padding:10px 18px;border-bottom:1px solid #dddddd}
