@@ -507,3 +507,13 @@ def download_data_json(request):
 
     json.dump(data,response)
     return response
+
+##
+# display downloads page
+#
+# @param request     WSGIRequest list with all HTTP Request
+#
+##
+@login_required(login_url='/accounts/login/')
+def downloads(request):
+    return render(request, "taskmanager/downloads.html")
