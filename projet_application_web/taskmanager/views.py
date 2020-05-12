@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404
@@ -66,6 +67,7 @@ def project(request, id):
     statuss = Status.objects.all()
     members = project.members.all()
 
+    #
     infos_gantt = list(map(
         (lambda task: {"name": task.name,
                        "start": [task.start_date.year,
@@ -77,13 +79,25 @@ def project(request, id):
                        }),
         tasks))
 
+    infos_activity = list(map(
+        lambda member: {"member": str(member),
+                         "activity": list(map(
+                             lambda month: sum(map(
+                                 lambda journal: (journal.date.month == month and journal.date.year == datetime.datetime.now().year),
+                                 Journal.objects.filter(author=member))),
+                             range(1, 13))),
+                         },
+        members))
+
+
 
     return render(request, 'taskmanager/project.html', {'project': project,
                                                         'my_tasks': my_tasks,
                                                         'tasks': tasks,
                                                         'statuss': statuss,
                                                         'members': members,
-                                                        "infos_gantt": infos_gantt,
+                                                        'infos_gantt': infos_gantt,
+                                                        'infos_activity': infos_activity,
                                                         'user': user})
 
 

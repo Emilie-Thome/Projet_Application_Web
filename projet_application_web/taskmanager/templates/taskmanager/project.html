@@ -184,4 +184,21 @@
     </div>
   </div>
 </div>
+
+<!-- Gantt Diagram -->
+<div class="row">
+  <div class="col">
+    <div class="container">
+      <h1 class="display-4">Activity Diagram</h1>
+    </div>
+  </div>
+  <div class="col">
+    <div class="container" id="activity">
+      <h1 style="text-align: center">Histogram of Activity not available... There is a problem</h1>
+      {{ infos_activity|json_script:"infos-activity" }}
+      <!-- JS must be loaded after including information -->
+      <script type="text/javascript" src="/static/js/activity_diagram.js"></script>
+    </div>
+  </div>
+</div>
 {% endblock %}

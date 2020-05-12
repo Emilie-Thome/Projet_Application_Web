@@ -56,6 +56,12 @@ hr.my-footer {margin-top: 0;
 .btn-log {float: right;
   background-color:#007bff}
 
+.btn-add {float: right;
+  margin-top: 6rem;
+  background-color:#6c757d;
+  border: none;
+}
+
 .btn-edit {position: relative;
   float: right;
   border: none;
