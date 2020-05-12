@@ -6,6 +6,7 @@ from .form import TaskForm
 import csv
 import xlwt
 import xml.etree.ElementTree as ET
+import json
 from django.contrib.auth.models import User
 
 ##
@@ -429,4 +430,80 @@ def download_data_xml(request):
     tree =  ET.ElementTree(d)
     tree.write(response)
 
+    return response
+
+
+##
+# export and donwload data into a json file
+#
+# @param request     WSGIRequest list with all HTTP Request
+#
+##
+@login_required(login_url='/accounts/login/')
+def download_data_json(request):
+    users = User.objects.all()
+    projects = Project.objects.all()
+    tasks = Task.objects.all()
+    statuss = Status.objects.all()
+    journals = Journal.objects.all()
+
+    response = HttpResponse(content_type='txt/json')
+    response['Content-disposition'] = 'attachment; filename=taskmanager.json'
+    data={}
+
+    #Users
+    data['Users']=[]
+    for user in users:
+        data['Users'].append({
+            'username':user.username,
+            'first_name':user.first_name,
+            'last_name':user.last_name,
+            'email':user.email
+        })
+
+    #Projects
+    data['Projects']=[]
+    for project in projects:
+        data['Projects'].append({
+            'name':project.name
+        })
+        mem=[]
+        for member in project.members.all():
+            mem.append(member.username)
+        data['Projects'].append({
+            'members':mem
+        })
+
+    #Tasks
+    data['Tasks']=[]
+    for task in tasks:
+        data['Tasks'].append({
+            'project':task.project.name,
+            'name':task.name,
+            'description':task.description,
+            'assignee':task.assignee.username,
+            'start_date':task.start_date.__str__(),
+            'due_date':task.due_date.__str__(),
+            'priority':task.priority.__str__(),
+            'status':task.status.name
+        })
+
+    #Status
+    data['Status']=[]
+    for status in statuss:
+        data['Status'].append({
+            'name':status.name
+        })
+
+    #Journal
+    data['Journal']=[]
+    for journal in journals:
+        data['Journal'].append({
+            'date':journal.date.__str__(),
+            'entry':journal.entry,
+            'author':journal.author.username,
+            'task':journal.task.name
+        })
+
+    json.dump(data,response)
     return response
