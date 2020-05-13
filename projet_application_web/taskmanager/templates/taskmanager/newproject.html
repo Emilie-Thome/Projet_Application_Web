@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+<!-- Path -->
+{% block path %}
+<h5 class="path">
+    <a href="{% url 'projects' %}">Projects</a>
+</h5>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+
+<!-- Action Band -->
+<h1 class="display-2" >New project</h1>
+<br>
+
+<!-- Project Form -->
+<form action="" method="post">
+    {% csrf_token %}
+    <!-- Fields -->
+    {% for field in form %}
+    <div class="form-group row">
+        <label class="col-sm-offset-1 col-sm-2 col-form-label">{{ field.label_tag }}</label>
+        {{ field }}
+    </div>
+    {% endfor %}
+    <!-- Submit -->
+    <div class="form-row">
+        <div class="col-lg-offset-1 col">
+            <button type="submit" class="btn btn-primary btn-md">Add</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#members').multiselect({
+            enableFiltering: true,
+            buttonWidth: 200,
+            maxHeight: 200,
+            nonSelectedText: 'Add Members...'
+        });
+
+        $(".caret").remove();
+    });
+
+</script>
+{% endblock %}

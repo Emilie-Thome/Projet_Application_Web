@@ -1,13 +1,23 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Project, Task, Journal, Status
-from .form import TaskForm
+from .form import TaskForm, JournalForm, ProjectForm
 import csv
 import xlwt
 import xml.etree.ElementTree as ET
 import json
-from django.contrib.auth.models import User
+
+
+##
+#Print the home page
+#
+#@param request    WSGIRequest list with all HTTP Request
+##
+def home(request):
+    return render(request, 'home.html')
+
 
 ##
 # Handle 404 Errors
@@ -50,15 +60,24 @@ def projects(request):
 def project(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
+    my_tasks = Task.objects.filter(project=project).filter(assignee=user)
     tasks = Task.objects.filter(project=project)
-
+    statuss = Status.objects.all()
+    members = project.members.all()
+    
     permission(user, project) # Checks if the user is a member of the project
     return render(request, 'taskmanager/project.html', {'project': project,
-                                                            'tasks': tasks,
-                                                            'user': user})
+                                                        'my_tasks': my_tasks,
+                                                        'tasks': tasks,
+                                                        'statuss': statuss,
+                                                        'members': members,
+                                                        'user': user})
+
+
 
 ##
 # Display one task, details associated and history
+# History can be added
 #
 # @param request     WSGIRequest list with all HTTP Request
 # @param             id The task's ID
@@ -70,9 +89,23 @@ def task(request, id):
     journals = Journal.objects.filter(task=task)
 
     permission(user, task.project) # Checks if the user is a member of the project
-    return render(request, 'taskmanager/task.html', {'task': task,
-                                                         'journals': journals,
-                                                         'user': user})
+
+    ''' New journal entry can always be posted, no specific view '''
+    if request.method == 'POST':
+        form = JournalForm(request.POST)
+        if form.is_valid():
+            journal = form.save(commit=False) # Do not save directly in the DB
+            journal.task = task # The project is not in the form because it is already defined
+            journal.author = user
+            journal.save()
+            return redirect('task', id=task.id)
+    else:
+        form = JournalForm()
+
+    return render(request, 'taskmanager/task.html', {'form': form,
+                                                     'task': task,
+                                                     'journals': journals,
+                                                     'user': user})
 
 ##
 # Add a new task to the project
@@ -129,8 +162,6 @@ def edittask(request, id):
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
-
-
 
 ##
 # export and donwload data into a csv file
@@ -517,3 +548,58 @@ def download_data_json(request):
 @login_required(login_url='/accounts/login/')
 def downloads(request):
     return render(request, "taskmanager/downloads.html")
+
+  
+##
+# Display every task of the user with the
+# associated person responsible for the task
+#
+# @param request    WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def tasks(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user])
+    return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                         'user': user})
+
+##
+# Display every done task of the user with the
+# associated person responsible for the task
+#
+# @param request    WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def tasks_done(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user]).filter(status__name="Terminée")
+    done_only = True
+    return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                         'user': user,
+                                                      'done_only': done_only})
+
+##
+# Add a project
+#
+# @param request     WSGIRequest list with all HTTP Request
+##
+@login_required(login_url='/accounts/login/')
+def newproject(request):
+    user = request.user
+
+    if request.method == "POST":
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save(commit=False)  # Do not save directly in the DB
+            project.save()
+            form.save_m2m() # Have to save ManyToManyField manually because of "form.save(commit=False)"
+            if not user in project.members.all() :
+                project.members.add(user)
+            project.save()
+            return redirect('project', id=project.id)
+    else:
+        form = ProjectForm()
+
+    return render(request, 'taskmanager/newproject.html', {'form': form,
+                                                           'user': user})
+

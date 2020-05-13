@@ -13,6 +13,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <!-- Multiple Selection Imports -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
+  <!-- DataTable Imports -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
   <!-- Personal css file -->
   <link rel="stylesheet" href="/static/css/styles.css">
@@ -35,9 +41,9 @@
     <!-- User Band -->
     {% block user_band %}
      <p class="lead">
-       Welcome {{ user }} !
+         Welcome {{ user }} ! Here are your projects: <a href="{% url 'projects' %}">home</a>
        <span>
-         <a href="{% url 'logout' %}" class="btn btn-info btn-lg" role="button">
+         <a href="{% url 'logout' %}" class="btn btn-info btn-lg btn-log" role="button">
            <span class="glyphicon glyphicon-log-out"></span> Log out
          </a>
        </span>
