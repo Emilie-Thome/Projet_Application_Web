@@ -383,9 +383,9 @@ def download_data_xml(request):
         name.text = task.name
         description = ET.SubElement(ta,"description")
         description.text = task.description
-        assignee = ET.SubElement(pro, 'assignee')
+        assignee = ET.SubElement(ta, 'assignee')
         assignee.set("id", task.assignee.id.__str__())
-        username = ET.SubElement(mem, 'username')
+        username = ET.SubElement(assignee, 'username')
         username.text = task.assignee.username
         start_date = ET.SubElement(ta,"start_date")
         start_date.text = task.start_date.__str__()
