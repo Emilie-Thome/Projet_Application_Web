@@ -28,14 +28,22 @@
 <div class="row">
   <div class="col">
     <!-- Filters Button -->
-    <div class="offset-md-3 col-md-1">
-      <button onclick="displayFilters()" style="border: none; color: #007bff; background-color: white; padding: 1rem 2rem; font-size:6rem" class="glyphicon glyphicon-filter btn-lg"></button>
+    <div class="offset-md-2 col-md-1">
+      <button onclick="displayFilters()" title="Filters" class="glyphicon glyphicon-filter btn-lg project-buttons"></button>
+    </div>
+    <!-- Gantt Button -->
+    <div class="offset-md-1 col-md-1">
+      <button onclick="displayGantt()" title="Gantt diagram" class="glyphicon glyphicon-object-align-left btn-lg project-buttons"></button>
+    </div>
+    <!-- Activity Button -->
+    <div class="offset-md-1 col-md-1">
+      <button onclick="displayActivity()" title="Activity diagram" class="glyphicon glyphicon-stats btn-lg project-buttons"></button>
     </div>
     <!-- Add Task Button -->
-    <div class="offset-md-3 col-md-1">
-      <button style="border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-        <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
-          <span class="glyphicon glyphicon-plus-sign"></span>
+    <div class="offset-md-1 col-md-1">
+      <button title="Add a task" class="project-buttons">
+        <a href="{% url 'newtask' project.id %}" class="btn-block">
+          <span class="glyphicon glyphicon-plus-sign "></span>
         </a>
       </button>
     </div>
@@ -141,12 +149,7 @@
 <!-- Gantt Diagram -->
 <div class="row">
   <div class="col">
-    <div class="container">
-      <h1 class="display-4">Gantt Diagram</h1>
-    </div>
-  </div>
-  <div class="col">
-    <div class="container" id="gantt">
+    <div class="container" id="gantt" style="display: none">
       <h1 style="text-align: center">Gantt not available... There is a problem</h1>
       {{ project.name|json_script:"name" }}
       {{ infos_gantt|json_script:"infos-gantt" }}
@@ -156,15 +159,10 @@
   </div>
 </div>
 
-<!-- Gantt Diagram -->
+<!-- Activity Diagram -->
 <div class="row">
   <div class="col">
-    <div class="container">
-      <h1 class="display-4">Activity Diagram</h1>
-    </div>
-  </div>
-  <div class="col">
-    <div class="container" id="activity">
+    <div class="container" id="activity" style="display: none">
       <h1 style="text-align: center">Histogram of Activity not available... There is a problem</h1>
       {{ infos_activity|json_script:"infos-activity" }}
       <!-- JS must be loaded after including information -->
@@ -177,6 +175,25 @@
   // Function to display filters
   function displayFilters() {
     var x = document.getElementById("filters");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
+  // Function to display gantt diagram
+  function displayGantt() {
+    var x = document.getElementById("gantt");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+  // Function to display activity diagram
+  function displayActivity() {
+    var x = document.getElementById("activity");
     if (x.style.display === "none") {
       x.style.display = "block";
     } else {

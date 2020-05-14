@@ -62,6 +62,12 @@ hr.my-footer {margin-top: 0;
   border: none;
 }
 
+.project-buttons {border: none;
+  color: #007bff;
+  background-color: white;
+  padding: 1rem 2rem;
+  font-size:6rem}
+
 .btn-edit {position: relative;
   float: right;
   border: none;
