@@ -12,22 +12,6 @@
 
 <!-- Content -->
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
-
-    <!-- Project Title And Add Task Button -->
-    <div class="row" style="padding: 0 0">
-        <div class="col">
-            <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
-            <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-                <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
-                    <span class="glyphicon glyphicon-plus-sign"></span>
-                </a>
-            </button>
-        </div>
-    </div>
-    </div>
 
 
     <div class="container-fluid">
@@ -230,5 +214,194 @@
                 });
             });
         </script>
+
+<!-- JS Filter And Sort -->
+<script type="text/javascript" src="/static/js/filter_and_sort.js"></script>
+
+<!-- Project Title -->
+<div class="row" style="padding: 0 0">
+  <div class="col">
+    <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
+  </div>
+</div>
+
+<!-- Buttons -->
+<div class="row">
+  <div class="col">
+    <!-- Filters Button -->
+    <div class="offset-md-2 col-md-1">
+      <button onclick="displayFilters()" title="Filters" class="glyphicon glyphicon-filter btn-lg project-buttons"></button>
     </div>
+    <!-- Gantt Button -->
+    <div class="offset-md-1 col-md-1">
+      <button onclick="displayGantt()" title="Gantt diagram" class="glyphicon glyphicon-object-align-left btn-lg project-buttons"></button>
+    </div>
+    <!-- Activity Button -->
+    <div class="offset-md-1 col-md-1">
+      <button onclick="displayActivity()" title="Activity diagram" class="glyphicon glyphicon-stats btn-lg project-buttons"></button>
+
+    </div>
+    <!-- Add Task Button -->
+    <div class="offset-md-1 col-md-1">
+      <button title="Add a task" class="project-buttons">
+        <a href="{% url 'newtask' project.id %}" class="btn-block">
+          <span class="glyphicon glyphicon-plus-sign "></span>
+        </a>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Filters -->
+<div class="row filters" id="filters" style="display: none">
+  <div class="col">
+    <div class="row align-items-center">
+      <div class="offset-md-1 col-md-5">
+        <label for="searchtask">Quick Search :</label>
+        <input type="text" class="form-control" id="searchtask" placeholder="Search Task...">
+      </div>
+      <div class="offset-md-1 col-md-2">
+        <label for="start-date-min">Start date from :</label>
+        <input type="date" class="form-control" id="start-date-min">
+      </div>
+      <div class="col-md-2">
+        <label for="start-date-max">Start date to :</label>
+        <input type="date" class="form-control" id="start-date-max">
+      </div>
+    </div>
+    <div class="row align-items-center">
+      <div class="offset-md-1 col-md-2">
+        <label for="statuss">Status :</label><br>
+        <select id="statuss" multiple>
+          {% for status in statuss %}
+          <option value="{{ status }}">{{ status }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="offset-md-1 col-md-2">
+        <label for="assignees">Assignees :</label><br>
+        <select id="assignees"  multiple>
+          {% for member in members %}
+          <option value="{{ member }}">{{ member }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="offset-md-1 col-md-2">
+        <label for="due-date-min">Due date from :</label>
+        <input type="date" class="form-control" id="due-date-min">
+      </div>
+      <div class="col-md-2">
+        <label for="due-date-max">Due date to :</label>
+        <input type="date" class="form-control" id="due-date-max">
+      </div>
+    </div>
+    <br>
+  </div>
+</div>
+
+
+
+<!-- Project Tasks With Details And Edit Button In Table -->
+<div class="row">
+  <div class="col">
+    {% if tasks %}
+    <table class="table" id="tasks-table">
+      <thead>
+        <tr>
+          <th scope="col" class="col-sm-1"><h4 class="th">Priority</h4></th>
+          <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
+          <th scope="col" class="col-sm-1"><h4 class="th">Status</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
+          <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
+          <th scope="col" class="col-sm-1"></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for task in tasks %}
+        <tr>
+          <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+          <td><h4><a href="{% url 'task' task.id %}"
+                     style="white-space: nowrap; width: 1%">{{ task }}</a>
+            </h4></td>
+          <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+          <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+          <td><h4 class="date">{{ task.start_date }}</h4></td>
+          <td><h4 class="date">{{ task.due_date }}</h4></td>
+          <td><h4>
+            <a href="{% url 'edittask' task.id %}" class="btn-block">
+              <span class="glyphicon glyphicon-edit"></span>
+            </a></h4>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+      {% endif %}
+      {% if not tasks %} <!-- If no tasks -->
+      <h1 class="display-4" style="text-align: center">No tasks in this project !</h1>
+      <h3 style="text-align: center">You can add some with the "plus" button.</h3>
+      {% endif %}
+  </div>
+</div>
+
+
+<!-- Gantt Diagram -->
+<div class="row">
+  <div class="col">
+    <div class="container" id="gantt" style="display: none">
+      <h1 style="text-align: center">Gantt not available... There is a problem</h1>
+      {{ project.name|json_script:"name" }}
+      {{ infos_gantt|json_script:"infos-gantt" }}
+      <!-- JS must be loaded after including information -->
+      <script type="text/javascript" src="/static/js/gantt_diagram.js"></script>
+    </div>
+  </div>
+</div>
+
+<!-- Activity Diagram -->
+<div class="row">
+  <div class="col">
+    <div class="container" id="activity" style="display: none">
+      <h1 style="text-align: center">Histogram of Activity not available... There is a problem</h1>
+      {{ infos_activity|json_script:"infos-activity" }}
+      <!-- JS must be loaded after including information -->
+      <script type="text/javascript" src="/static/js/activity_diagram.js"></script>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Function to display filters
+  function displayFilters() {
+    var x = document.getElementById("filters");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
+  // Function to display gantt diagram
+  function displayGantt() {
+    var x = document.getElementById("gantt");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+  // Function to display activity diagram
+  function displayActivity() {
+    var x = document.getElementById("activity");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+</script>
+
 {% endblock %}

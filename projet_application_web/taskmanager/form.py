@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task, Journal
+from .models import Task, Journal, Project
 
 class TaskForm(forms.ModelForm):
     class Meta:
@@ -66,3 +66,20 @@ class JournalForm(forms.ModelForm):
 
         # Fields labels are defined :
         labels = {'entry': 'Write a message :',}
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields='__all__'
+
+        # Fields widgets are defined :
+        widgets = {'name':forms.TextInput(attrs={'class':'form-control col-sm-9',
+                                                  'placeholder':'Title...'}),
+                   'members':forms.SelectMultiple(attrs={'multiple':'multiple',
+                                                 'id':'members'}),
+                   }
+
+        # Fields labels are defined :
+        labels = {'name': 'Title :',
+                  'members': 'Members :',
+                  }

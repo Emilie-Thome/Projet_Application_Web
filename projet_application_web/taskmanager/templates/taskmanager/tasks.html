@@ -9,6 +9,7 @@
 
         {% if done_only %}
             <!-- On garde le même template pour l'affichage des tâches normales et des tâches terminées-->
+      
             <a href="{% url 'tasks' %}" class="text-muted">tasks</a>/
             <a href="{% url 'tasks_done' %}">tasks done</a>/
 
@@ -18,6 +19,8 @@
         {% endif %}
 
         <a href="{% url 'activities' %}" class="text-muted">activities</a>
+      
+        <a href="{% url 'downloads' %}" class="text-muted">Downloads</a>
     </h1>
 
 {% endblock %}
