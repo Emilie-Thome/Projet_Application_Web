@@ -135,12 +135,13 @@
                     <!-- Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="dropdown-toggle btn navbtn" href="#" id="navbardrop" data-toggle="dropdown">
-                            Dropdown link
+                            Export data
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Link 1</a>
-                            <a class="dropdown-item" href="#">Link 2</a>
-                            <a class="dropdown-item" href="#">Link 3</a>
+                            <a class="dropdown-item" href="{% url 'download_csv' %}">CSV</a>
+                            <a class="dropdown-item" href="{% url 'download_json' %}">JSON</a>
+                            <a class="dropdown-item" href="{% url 'download_xls' %}">XLS</a>
+                            <a class="dropdown-item" href="{% url 'download_xml' %}">XML</a>
                         </div>
                     </li>
                 </ul>
