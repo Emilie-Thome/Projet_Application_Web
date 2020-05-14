@@ -1,17 +1,30 @@
 $(document).ready(function() {
+
+    // Function to display filters
+    function displayFilters() {
+      var x = document.getElementById("filters");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+
+    // Multiselect with checkbox dropdown
     $('#statuss').multiselect({
-        buttonWidth: 170,
+        buttonWidth: 160,
         nonSelectedText: 'Filter Status...'
     });
 
     $('#assignees').multiselect({
         enableFiltering: true,
-        buttonWidth: 170,
+        buttonWidth: 160,
         nonSelectedText: 'Filter Assignees...'
     });
 
     $(".caret").remove(); // because there are two caret otherwise
 
+    // Filter function
     function myFilter(){
         let $table = $("#tasks-table"),
             $rows = $table.find('tbody tr');
@@ -66,6 +79,7 @@ $(document).ready(function() {
     $(".filters").change(myFilter);
 
 
+    // DataTable sort things
     $('#tasks-table').DataTable({
       "searching": false,
       "bPaginate": false,
@@ -82,7 +96,7 @@ $(document).ready(function() {
       ],
     });
 
-
+    // Sort functions
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
       "rankStatus-pre": function ( a ) {
         function getRankStatus(status) {
