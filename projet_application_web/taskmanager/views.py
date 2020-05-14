@@ -67,7 +67,6 @@ def project(request, id):
     project = get_object_or_404(Project, id=id)
     permission(user, project)  # Checks if the user is a member of the project
 
-    my_tasks = Task.objects.filter(project=project).filter(assignee=user)
     tasks = Task.objects.filter(project=project)
     statuss = Status.objects.all()
     members = project.members.all()
@@ -88,7 +87,9 @@ def project(request, id):
         lambda member: {"member": str(member),
                          "activity": list(map(
                              lambda month: sum(map(
-                                 lambda journal: (journal.date.month == month and journal.date.year == datetime.datetime.now().year),
+                                 lambda journal: (journal.task in tasks
+                                                  and journal.date.month == month
+                                                  and journal.date.year == datetime.datetime.now().year),
                                  Journal.objects.filter(author=member))),
                              range(1, 13))),
                          },
@@ -97,7 +98,6 @@ def project(request, id):
 
 
     return render(request, 'taskmanager/project.html', {'project': project,
-                                                        'my_tasks': my_tasks,
                                                         'tasks': tasks,
                                                         'statuss': statuss,
                                                         'members': members,
