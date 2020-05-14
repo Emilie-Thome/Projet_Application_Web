@@ -2,13 +2,32 @@
 
 <!-- Path -->
 {% block path %}
-<h5 class="path">
-    <a href="{% url 'downloads' %}">Downloads</a>
-</h5>
+    <h5 class="path">
+        <a href="{% url 'downloads' %}">Downloads</a>
+    </h5>
 {% endblock %}
+
+
+
+
 
 <!-- Content -->
 {% block content %}
+
+    {% block projects_navigation %}
+
+        <!-- Downloads -->
+        <h1 class="display-2">
+            <a href="{% url 'projects' %}" class="text-muted">Projects</a>/
+            <a href="{% url 'tasks' %}" class="text-muted">Tasks</a>/
+            <a href="{% url 'tasks_done' %}" class="text-muted">Tasks done</a>/
+            <a href="#" class="text-muted">Activities</a>
+            <a href="{% url 'downloads' %}">Downloads</a>
+        </h1>
+
+    {% endblock %}
+
+
     <div class="container-fluid">
         <h4 class="display-4">Download data here</h4>
     </div>
