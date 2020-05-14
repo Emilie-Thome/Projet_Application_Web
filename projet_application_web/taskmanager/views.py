@@ -209,6 +209,7 @@ def edittask(request, id):
 # export and donwload data into a csv file
 #
 # @param request     WSGIRequest list with all HTTP Request
+# @param datachoice 'all', 'users', 'projects', 'tasks', 'status', 'journal' the model to export
 #
 ##
 @login_required(login_url='/accounts/login/')
@@ -294,6 +295,7 @@ def download_data_csv(request, datachoice):
 # export and donwload data into a xls file
 #
 # @param request     WSGIRequest list with all HTTP Request
+# @param datachoice 'all', 'users', 'projects', 'tasks', 'status', 'journal' the model to export
 #
 ##
 @login_required(login_url='/accounts/login/')
@@ -418,6 +420,7 @@ def download_data_xls(request, datachoice):
 # export and donwload data into a xml file
 #
 # @param request     WSGIRequest list with all HTTP Request
+# @param datachoice 'all', 'users', 'projects', 'tasks', 'status', 'journal' the model to export
 #
 ##
 @login_required(login_url='/accounts/login/')
@@ -537,6 +540,7 @@ def download_data_xml(request, datachoice):
 # export and donwload data into a json file
 #
 # @param request     WSGIRequest list with all HTTP Request
+# @param datachoice 'all', 'users', 'projects', 'tasks', 'status', 'journal' the model to export
 #
 ##
 @login_required(login_url='/accounts/login/')
