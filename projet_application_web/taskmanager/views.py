@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404
@@ -10,10 +11,11 @@ import xml.etree.ElementTree as ET
 import json
 
 
+
 ##
-#Print the home page
+# Print the home page
 #
-#@param request    WSGIRequest list with all HTTP Request
+# @param request    WSGIRequest list with all HTTP Request
 ##
 def home(request):
     return render(request, 'home.html')
@@ -27,6 +29,7 @@ def home(request):
 def handler404(request):
     return render(request, '404.html')
 
+
 ##
 # Redirect to error404 if the user is not a project member
 #
@@ -36,6 +39,7 @@ def handler404(request):
 def permission(user, project):
     if not (user in project.members.all()):
         raise Http404
+
 
 ##
 # Display every project of the user with the
@@ -50,6 +54,7 @@ def projects(request):
     return render(request, 'taskmanager/projects.html', {'projects': projects,
                                                          'user': user})
 
+
 ##
 # Display one project tasks and their details
 #
@@ -60,19 +65,45 @@ def projects(request):
 def project(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
-    my_tasks = Task.objects.filter(project=project).filter(assignee=user)
+    permission(user, project)  # Checks if the user is a member of the project
+
     tasks = Task.objects.filter(project=project)
     statuss = Status.objects.all()
     members = project.members.all()
-    
-    permission(user, project) # Checks if the user is a member of the project
+
+    #
+    infos_gantt = list(map(
+        (lambda task: {"name": task.name,
+                       "start": [task.start_date.year,
+                                 task.start_date.month,
+                                 task.start_date.day],
+                       "end": [task.due_date.year,
+                               task.due_date.month,
+                               task.due_date.day],
+                       }),
+        tasks))
+
+    infos_activity = list(map(
+        lambda member: {"member": str(member),
+                         "activity": list(map(
+                             lambda month: sum(map(
+                                 lambda journal: (journal.task in tasks
+                                                  and journal.date.month == month
+                                                  and journal.date.year == datetime.datetime.now().year),
+                                 Journal.objects.filter(author=member))),
+                             range(1, 13))),
+                         },
+        members))
+
+
+
     return render(request, 'taskmanager/project.html', {'project': project,
-                                                        'my_tasks': my_tasks,
                                                         'tasks': tasks,
                                                         'statuss': statuss,
                                                         'members': members,
+                                                        'infos_gantt': infos_gantt,
+                                                        'infos_activity': infos_activity,
                                                         'user': user})
-
 
 
 ##
@@ -88,14 +119,14 @@ def task(request, id):
     task = get_object_or_404(Task, id=id)
     journals = Journal.objects.filter(task=task)
 
-    permission(user, task.project) # Checks if the user is a member of the project
+    permission(user, task.project)  # Checks if the user is a member of the project
 
     ''' New journal entry can always be posted, no specific view '''
     if request.method == 'POST':
         form = JournalForm(request.POST)
         if form.is_valid():
-            journal = form.save(commit=False) # Do not save directly in the DB
-            journal.task = task # The project is not in the form because it is already defined
+            journal = form.save(commit=False)  # Do not save directly in the DB
+            journal.task = task  # The project is not in the form because it is already defined
             journal.author = user
             journal.save()
             return redirect('task', id=task.id)
@@ -107,6 +138,7 @@ def task(request, id):
                                                      'journals': journals,
                                                      'user': user})
 
+
 ##
 # Add a new task to the project
 #
@@ -117,25 +149,26 @@ def task(request, id):
 def newtask(request, id):
     user = request.user
     project = get_object_or_404(Project, id=id)
-    permission(user, project) # Checks if the user is a member of the project
+    permission(user, project)  # Checks if the user is a member of the project
 
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            task = form.save(commit=False) # Do not save directly in the DB
-            task.project = project # The project is not in the form because it is already defined
+            task = form.save(commit=False)  # Do not save directly in the DB
+            task.project = project  # The project is not in the form because it is already defined
             task.save()
             return redirect('task', id=task.id)
     else:
         form = TaskForm()
         # Set assignee choices according to the project members :
-        form.fields['assignee'].choices = map((lambda member: (member.id, member)),project.members.all())
-        form.fields['assignee'].choices.insert(0,("", '---------')) # Set a placeholder, because it is
-                                                                    # removed with the choices setup
+        form.fields['assignee'].choices = map((lambda member: (member.id, member)), project.members.all())
+        form.fields['assignee'].choices.insert(0, ("", '---------'))  # Set a placeholder, because it is
+        # removed with the choices setup
 
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'project': project,
                                                         'user': user})
+
 
 ##
 # Edit a task
@@ -147,21 +180,22 @@ def newtask(request, id):
 def edittask(request, id):
     user = request.user
     task = get_object_or_404(Task, id=id)
-    permission(user, task.project) # Checks if the user is a member of the project
+    permission(user, task.project)  # Checks if the user is a member of the project
 
     if request.method == "POST":
-        form = TaskForm(request.POST, instance=task) # The form is filled with current infos
+        form = TaskForm(request.POST, instance=task)  # The form is filled with current infos
         if form.is_valid():
             form.save()
             return redirect('task', id=id)
     else:
-        form = TaskForm(instance=task) # The form is filled with current infos
+        form = TaskForm(instance=task)  # The form is filled with current infos
         # Set assignee choices according to the project members :
-        form.fields['assignee'].choices = map((lambda member: (member.id, member)),task.project.members.all())
+        form.fields['assignee'].choices = map((lambda member: (member.id, member)), task.project.members.all())
 
     return render(request, 'taskmanager/newtask.html', {'form': form,
                                                         'task': task,
                                                         'user': user})
+
 
 ##
 # export and donwload data into a csv file
@@ -550,6 +584,7 @@ def downloads(request):
     return render(request, "taskmanager/downloads.html")
 
   
+
 ##
 # Display every task of the user with the
 # associated person responsible for the task
@@ -561,7 +596,8 @@ def tasks(request):
     user = request.user
     tasks = Task.objects.filter(project__members__in=[user])
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
-                                                         'user': user})
+                                                      'user': user})
+
 
 ##
 # Display every done task of the user with the
@@ -575,8 +611,9 @@ def tasks_done(request):
     tasks = Task.objects.filter(project__members__in=[user]).filter(status__name="Terminée")
     done_only = True
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
-                                                         'user': user,
+                                                      'user': user,
                                                       'done_only': done_only})
+
 
 ##
 # Add a project
@@ -592,8 +629,8 @@ def newproject(request):
         if form.is_valid():
             project = form.save(commit=False)  # Do not save directly in the DB
             project.save()
-            form.save_m2m() # Have to save ManyToManyField manually because of "form.save(commit=False)"
-            if not user in project.members.all() :
+            form.save_m2m()  # Have to save ManyToManyField manually because of "form.save(commit=False)"
+            if not user in project.members.all():
                 project.members.add(user)
             project.save()
             return redirect('project', id=project.id)
@@ -602,4 +639,3 @@ def newproject(request):
 
     return render(request, 'taskmanager/newproject.html', {'form': form,
                                                            'user': user})
-
