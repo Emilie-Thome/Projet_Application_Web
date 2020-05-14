@@ -7,16 +7,18 @@
     <h1 class="display-2">
         <a href="{% url 'projects' %}" class="text-muted">Projects</a>/
 
-        {% if done_only %} <!-- On garde le même template pour l'affichage des tâches normales et des tâches terminées-->
-        <a href="{% url 'tasks' %}" class="text-muted">Tasks</a>/
-        <a href="{% url 'tasks_done' %}" >Tasks done</a>/
+        {% if done_only %}
+            <!-- On garde le même template pour l'affichage des tâches normales et des tâches terminées-->
+            <a href="{% url 'tasks' %}" class="text-muted">Tasks</a>/
+            <a href="{% url 'tasks_done' %}">Tasks done</a>/
 
         {% else %}
-        <a href="{% url 'tasks' %}">Tasks</a>/
-        <a href="{% url 'tasks_done' %}" class="text-muted">Tasks done</a>/
+            <a href="{% url 'tasks' %}">Tasks</a>/
+            <a href="{% url 'tasks_done' %}" class="text-muted">Tasks done</a>/
         {% endif %}
 
         <a href="#" class="text-muted">Activities</a>
+        <a href="{% url 'downloads' %}" class="text-muted">Downloads</a>
     </h1>
 
 {% endblock %}
@@ -32,7 +34,7 @@
                         href="{% url 'task' task.id %}">{{ task }}</a> - </h4>
 
                 <!-- Assigned to -->
-                    <h6 class="assignee">{{ task.assignee }}</h6>
+                <h6 class="assignee">{{ task.assignee }}</h6>
             </td>
         </tr>
     {% endfor %}

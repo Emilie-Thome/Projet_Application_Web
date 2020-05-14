@@ -13,73 +13,76 @@
 <!-- Content -->
 {% block content %}
 
+
 <!-- JS Filter And Sort -->
 <script type="text/javascript" src="/static/js/filter_and_sort.js"></script>
 
-<!-- Project Title And Add Task Button -->
+<!-- Project Title -->
 <div class="row" style="padding: 0 0">
-    <div class="col">
-        <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
-        <button style="position: relative; float: right; border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
-            <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
-                <span class="glyphicon glyphicon-plus-sign"></span>
-            </a>
-        </button>
-    </div>
+  <div class="col">
+    <h1 class="display-2" style="position: relative; float: left;">{{ project }}</h1>
+  </div>
 </div>
 
-<!-- Filters -->
-<div class="row filters">
+<!-- Buttons -->
+<div class="row">
   <div class="col">
-    <div class="form-row align-items-center">
-      <div class="form-group col-md-5">
+    <!-- Filters Button -->
+    <div class="offset-md-3 col-md-1">
+      <button onclick="displayFilters()" style="border: none; color: #007bff; background-color: white; padding: 1rem 2rem; font-size:6rem" class="glyphicon glyphicon-filter btn-lg"></button>
+    </div>
+    <!-- Add Task Button -->
+    <div class="offset-md-3 col-md-1">
+      <button style="border: none; background-color: white; padding: 1rem 2rem; font-size:6rem">
+        <a href="{% url 'newtask' project.id %}" class="btn-block" style="color: #007bff;">
+          <span class="glyphicon glyphicon-plus-sign"></span>
+        </a>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Filters -->
+<div class="row filters" id="filters" style="display: none">
+  <div class="col">
+    <div class="row align-items-center">
+      <div class="offset-md-1 col-md-5">
         <label for="searchtask">Quick Search :</label>
         <input type="text" class="form-control" id="searchtask" placeholder="Search Task...">
       </div>
-      <div class="form-group col-md-1">
-      </div>
-      <div class="form-group col-md-1">
-        <label class="col-form-label">Start date :</label>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="start-date-min">From </label>
+      <div class="offset-md-1 col-md-2">
+        <label for="start-date-min">Start date from :</label>
         <input type="date" class="form-control" id="start-date-min">
       </div>
-      <div class="form-group col-md-2">
-        <label for="start-date-max"> To </label>
+      <div class="col-md-2">
+        <label for="start-date-max">Start date to :</label>
         <input type="date" class="form-control" id="start-date-max">
       </div>
     </div>
-    <div class="form-row align-items-center">
-      <div class="form-group col-md-2">
-        <label for="statuss">Status :</label>
+    <div class="row align-items-center">
+      <div class="offset-md-1 col-md-2">
+        <label for="statuss">Status :</label><br>
         <select id="statuss" multiple>
           {% for status in statuss %}
           <option value="{{ status }}">{{ status }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="form-group col-md-1">
-      </div>
-      <div class="form-group col-md-2">
-        <label for="assignees">Assignees :</label>
+      <div class="offset-md-1 col-md-2">
+        <label for="assignees">Assignees :</label><br>
         <select id="assignees"  multiple>
           {% for member in members %}
           <option value="{{ member }}">{{ member }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="form-group col-md-1">
-      </div>
-      <div class="form-group col-md-1">
-        <label class="col-form-label">Due date :</label>
-      </div>
-      <div class="form-group col-md-2">
-        <label for="due-date-min">From </label>
+      <div class="offset-md-1 col-md-2">
+        <label for="due-date-min">Due date from :</label>
         <input type="date" class="form-control" id="due-date-min">
       </div>
-      <div class="form-group col-md-2">
-        <label for="due-date-max"> To </label>
+      <div class="col-md-2">
+        <label for="due-date-max">Due date to :</label>
         <input type="date" class="form-control" id="due-date-max">
       </div>
     </div>
@@ -87,46 +90,12 @@
   </div>
 </div>
 
+
+
 <!-- Project Tasks With Details And Edit Button In Table -->
 <div class="row">
   <div class="col">
-    <table class="table">
-      {% if my_tasks %} <!-- If the user has tasks in this project they will be separated here -->
-      <thead>
-        <tr>
-          <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
-          <th scope="col" class="col-sm-3"><h4 class="th">Task</h4></th>
-          <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
-          <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
-          <th scope="col" class="col-sm-2"><h4 class="th">Start date</h4></th>
-          <th scope="col" class="col-sm-2"><h4 class="th">Due date</h4></th>
-          <th scope="col" class="col-sm-1"></th>
-        </tr>
-      </thead>
-      <tbody>
-
-        {% for task in my_tasks %}
-        <tr>
-          <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
-          <td><h4><a href="{% url 'task' task.id %}"
-                     style="white-space: nowrap; width: 1%">{{ task }}</a>
-            </h4></td>
-          <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
-          <td><h5 class="assignee">{{ task.assignee }}</h5></td>
-          <td><h4 class="date">{{ task.start_date }}</h4></td>
-          <td><h4 class="date">{{ task.due_date }}</h4></td>
-          <td><h4>
-            <a href="{% url 'edittask' task.id %}" class="btn-block">
-              <span class="glyphicon glyphicon-edit"></span>
-            </a></h4>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-      {% endif %}
-    </table>
-
-    {% if tasks %} <!-- Other tasks -->
+    {% if tasks %}
     <table class="table" id="tasks-table">
       <thead>
         <tr>
@@ -161,11 +130,13 @@
       </tbody>
     </table>
       {% endif %}
-      {% if not my_tasks and not tasks %} <!-- If no tasks -->
-      <h1>No tasks in this project!</h1>
+      {% if not tasks %} <!-- If no tasks -->
+      <h1 class="display-4" style="text-align: center">No tasks in this project !</h1>
+      <h3 style="text-align: center">You can add some with the "plus" button.</h3>
       {% endif %}
   </div>
 </div>
+
 
 <!-- Gantt Diagram -->
 <div class="row">
@@ -201,4 +172,17 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Function to display filters
+  function displayFilters() {
+    var x = document.getElementById("filters");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+</script>
+
 {% endblock %}
