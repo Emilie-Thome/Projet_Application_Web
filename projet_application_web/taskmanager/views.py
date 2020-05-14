@@ -212,7 +212,8 @@ def edittask(request, id):
 #
 ##
 @login_required(login_url='/accounts/login/')
-def download_data_csv(request):
+def download_data_csv(request, datachoice):
+    users = User.objects.all()
     projects = Project.objects.all()
     tasks = Task.objects.all()
     statuss = Status.objects.all()
@@ -223,55 +224,70 @@ def download_data_csv(request):
 
     writer = csv.writer(response, delimiter=',')
 
+    #users
+    if datachoice=='all' or datachoice=='users':
+        writer.writerow(['Username', 'first_name', 'last_name', 'email'])
+        for user in users:
+            writer.writerow([user.username, user.first_name, user.last_name, user.email])
+        writer.writerow([])
     #projects
-    writer.writerow(['Project_name', 'Project_members'])
-    """Pour l'instant les membres apparaitront sous la forme d'une liste au format [user1, user2,...]"""
-    for project in projects:
-        members=[]
-        for member in project.members.all():
-            members.append(member.username)
-        writer.writerow([project.name, members])
+    if datachoice=='all' or datachoice=='projects':
+        writer.writerow(['Project_name', 'Project_members'])
+        """Pour l'instant les membres apparaitront sous la forme d'une liste au format [user1, user2,...]"""
+        for project in projects:
+            members=[]
+            for member in project.members.all():
+                members.append(member.username)
+            writer.writerow([project.name, members])
 
-    writer.writerow([])
+        writer.writerow([])
 
-    #status
-    writer.writerow(['Status name'])
-    for status in statuss:
-        writer.writerow([status.name])
 
-    writer.writerow([])
     #tasks
-    writer.writerow(
-        ['Task project',
-         'Task name',
-         'Task description',
-         'Task assignee',
-         'Task start_date',
-         'Task due_date',
-         'Task priority',
-         'Task status'])
-
-    for task in tasks:
+    if datachoice == 'all' or datachoice == 'tasks':
         writer.writerow(
-            [task.project.name,
-             task.name,
-             task.description,
-             task.start_date,
-             task.due_date,
-             task.priority,
-             task.status])
+            ['Task project',
+             'Task name',
+             'Task description',
+             'Task assignee',
+             'Task start_date',
+             'Task due_date',
+             'Task priority',
+             'Task status',
+             'Task modified'])
 
-    writer.writerow([])
+        for task in tasks:
+            writer.writerow(
+                [task.project.name,
+                 task.name,
+                 task.description,
+                 task.assignee,
+                 task.start_date,
+                 task.due_date,
+                 task.priority,
+                 task.status,
+                 task.modified])
+
+        writer.writerow([])
+
+    # status
+    if datachoice == 'all' or datachoice == 'status':
+        writer.writerow(['Status name'])
+        for status in statuss:
+            writer.writerow([status.name])
+
+        writer.writerow([])
 
     #journal
-    writer.writerow(
-        ['Journal date', 'Journal entry', 'Journal author', 'Journal task']
-    )
-
-    for journal in journals:
+    if datachoice == 'all' or datachoice == 'journals':
         writer.writerow(
-            [journal.date, journal.entry, journal.author, journal.task]
+            ['Journal date', 'Journal entry', 'Journal author', 'Journal task']
         )
+
+        for journal in journals:
+            writer.writerow(
+                [journal.date, journal.entry, journal.author, journal.task]
+            )
     return response
 
 ##
@@ -281,7 +297,7 @@ def download_data_csv(request):
 #
 ##
 @login_required(login_url='/accounts/login/')
-def download_data_xls(request):
+def download_data_xls(request, datachoice):
     users = User.objects.all()
     projects = Project.objects.all()
     tasks = Task.objects.all()
@@ -293,102 +309,106 @@ def download_data_xls(request):
     response['Content-disposition'] = 'attachment; filename=taskmanager.xls'
     wb = xlwt.Workbook(encoding='utf-8')
     style = xlwt.Style.easyxf(num_format_str="dd/mm/yy")
+
     #Users
-    wu = wb.add_sheet("Users")
+    if datachoice == 'all' or datachoice == 'users':
+        wu = wb.add_sheet("Users")
+        row = 0
+        fields = ["username",
+                  "first_name",
+                  "last_name",
+                  "email"]
 
-    row = 0
-    fields = ["username",
-              "first_name",
-              "last_name",
-              "email"]
+        for i in range(len(fields)):
+            wu.write(row, i, fields[i])
 
-    for i in range(len(fields)):
-        wu.write(row, i, fields[i])
-
-    for user in users:
-        row +=1
-        wu.write(row, 0, user.username)
-        wu.write(row, 1, user.first_name)
-        wu.write(row, 2, user.last_name)
-        wu.write(row, 3, user.email)
-
+        for user in users:
+            row +=1
+            wu.write(row, 0, user.username)
+            wu.write(row, 1, user.first_name)
+            wu.write(row, 2, user.last_name)
+            wu.write(row, 3, user.email)
 
     #Projects
-    wp = wb.add_sheet("Projects")
+    if datachoice == 'all' or datachoice == 'projects':
+        wp = wb.add_sheet("Projects")
+        row=0
+        fields=["name",
+                "members"]
 
-    row=0
-    fields=["name",
-            "members"]
-    for i in range(len(fields)):
-        wp.write(row,i,fields[i])
+        for i in range(len(fields)):
+            wp.write(row,i,fields[i])
 
-    for project in projects:
-        row+=1
-        wp.write(row,0,project.name)
-        col=0
-        for member in project.members.all():
-            col+=1
-            wp.write(row,col, member.username)
+        for project in projects:
+            row+=1
+            wp.write(row,0,project.name)
+            col=0
+            for member in project.members.all():
+                col+=1
+                wp.write(row,col, member.username)
 
 
     #Tasks
-    wt = wb.add_sheet("Tasks")
+    if datachoice == 'all' or datachoice == 'tasks':
+        wt = wb.add_sheet("Tasks")
+        row=0
+        fields=['project',
+                'name',
+                'description',
+                'assignee',
+                'start_date',
+                'due_date',
+                'priority',
+                'status',
+                'modified']
 
-    row=0
-    fields=['project',
-         'name',
-         'description',
-         'assignee',
-         'start_date',
-         'due_date',
-         'priority',
-         'status']
+        for i in range(len(fields)):
+            wt.write(row,i,fields[i])
 
-    for i in range(len(fields)):
-        wt.write(row,i,fields[i])
-
-    for task in tasks:
-        row+=1
-        wt.write(row, 0, task.project.name)
-        wt.write(row, 1, task.name)
-        wt.write(row, 2, task.description)
-        wt.write(row, 3, task.assignee.username)
-        wt.write(row, 4, task.start_date, style)
-        wt.write(row, 5, task.due_date, style)
-        wt.write(row, 6, task.priority)
-        wt.write(row, 7, task.status.name)
+        for task in tasks:
+            row+=1
+            wt.write(row, 0, task.project.name)
+            wt.write(row, 1, task.name)
+            wt.write(row, 2, task.description)
+            wt.write(row, 3, task.assignee.username)
+            wt.write(row, 4, task.start_date, style)
+            wt.write(row, 5, task.due_date, style)
+            wt.write(row, 6, task.priority)
+            wt.write(row, 7, task.status.name)
+            wt.write(row, 8, task.modified.strftime("%Y-%m-%d %H:%M"), style)
 
 
      #Status
-    ws = wb.add_sheet("Status")
+    if datachoice == 'all' or datachoice == 'status':
+        ws = wb.add_sheet("Status")
+        row=0
+        fields=['name']
+        for i in range(len(fields)):
+            ws.write(row,i,fields[i])
 
-    row=0
-    fields=['name']
-    for i in range(len(fields)):
-        ws.write(row,i,fields[i])
-
-    for status in statuss:
-        row+=1
-        ws.write(row,0,status.name)
+        for status in statuss:
+            row+=1
+            ws.write(row,0,status.name)
 
 
     #Journal
-    wj = wb.add_sheet("Journal")
-    row=0
-    fields=['date',
-            'entry',
-            'author',
-            'task']
+    if datachoice == 'all' or datachoice == 'journals':
+        wj = wb.add_sheet("Journal")
+        row=0
+        fields=['date',
+                'entry',
+                'author',
+                'task']
 
-    for i in range(len(fields)):
-        wj.write(row,i,fields[i])
+        for i in range(len(fields)):
+            wj.write(row,i,fields[i])
 
-    for journal in journals:
-        row+=1
-        wj.write(row,0,journal.date.strftime("%Y-%m-%d %H:%M"), style)
-        wj.write(row,1,journal.entry)
-        wj.write(row,2,journal.author.username)
-        wj.write(row,3,journal.task.name)
+        for journal in journals:
+            row+=1
+            wj.write(row,0,journal.date.strftime("%Y-%m-%d %H:%M"), style)
+            wj.write(row,1,journal.entry)
+            wj.write(row,2,journal.author.username)
+            wj.write(row,3,journal.task.name)
 
 
     wb.save(response)
@@ -401,7 +421,7 @@ def download_data_xls(request):
 #
 ##
 @login_required(login_url='/accounts/login/')
-def download_data_xml(request):
+def download_data_xml(request, datachoice):
     users = User.objects.all()
     projects = Project.objects.all()
     tasks = Task.objects.all()
@@ -414,90 +434,97 @@ def download_data_xml(request):
     d = ET.Element('data')
 
     #Users
-    u = ET.SubElement(d, 'Users')
+    if datachoice == 'all' or datachoice == 'users':
+        u = ET.SubElement(d, 'Users')
 
-    for user in users:
-        us = ET.SubElement(u, 'user')
-        us.set("id", user.id.__str__())
-        username = ET.SubElement(us, 'username')
-        username.text = user.username
-        first_name = ET.SubElement(us, 'first_name')
-        first_name.text = user.first_name
-        last_name = ET.SubElement(us, 'last_name')
-        last_name.text = user.last_name
-        email = ET.SubElement(us, 'email')
-        email.text = user.email
+        for user in users:
+            us = ET.SubElement(u, 'user')
+            us.set("id", user.id.__str__())
+            username = ET.SubElement(us, 'username')
+            username.text = user.username
+            first_name = ET.SubElement(us, 'first_name')
+            first_name.text = user.first_name
+            last_name = ET.SubElement(us, 'last_name')
+            last_name.text = user.last_name
+            email = ET.SubElement(us, 'email')
+            email.text = user.email
 
     #Projects
-    p = ET.SubElement(d, 'Projects')
+    if datachoice == 'all' or datachoice == 'projects':
+        p = ET.SubElement(d, 'Projects')
 
-    for project in projects:
-        pro = ET.SubElement(p, 'project')
-        pro.set("id", project.id.__str__())
-        name = ET.SubElement(pro,"name")
-        name.text = project.name
-        for member in project.members.all():
-            mem = ET.SubElement(pro, 'member')
-            mem.set("id", member.id.__str__())
-            username = ET.SubElement(mem, 'username')
-            username.text = member.username
+        for project in projects:
+            pro = ET.SubElement(p, 'project')
+            pro.set("id", project.id.__str__())
+            name = ET.SubElement(pro,"name")
+            name.text = project.name
+            for member in project.members.all():
+                mem = ET.SubElement(pro, 'member')
+                mem.set("id", member.id.__str__())
+                username = ET.SubElement(mem, 'username')
+                username.text = member.username
 
     #Tasks
-    t = ET.SubElement(d, 'Tasks')
+    if datachoice == 'all' or datachoice == 'tasks':
+        t = ET.SubElement(d, 'Tasks')
 
-    for task in tasks:
-        ta = ET.SubElement(t,"task")
-        ta.set("id", task.id.__str__())
-        project = ET.SubElement(ta,"project")
-        project.set("id", task.project.id.__str__())
-        pname = ET.SubElement(project,"name")
-        pname.text = task.project.name
-        name = ET.SubElement(ta, "name")
-        name.text = task.name
-        description = ET.SubElement(ta,"description")
-        description.text = task.description
-        assignee = ET.SubElement(ta, 'assignee')
-        assignee.set("id", task.assignee.id.__str__())
-        username = ET.SubElement(assignee, 'username')
-        username.text = task.assignee.username
-        start_date = ET.SubElement(ta,"start_date")
-        start_date.text = task.start_date.__str__()
-        due_date = ET.SubElement(ta,"due_date")
-        due_date.text = task.due_date.__str__()
-        priority = ET.SubElement(ta,"priority")
-        priority.text = task.priority.__str__()
-        sta = ET.SubElement(ta,"status")
-        sta.set("id", task.status.id.__str__())
-        sname = ET.SubElement(sta, "name")
-        sname.text = task.status.name
+        for task in tasks:
+            ta = ET.SubElement(t,"task")
+            ta.set("id", task.id.__str__())
+            project = ET.SubElement(ta,"project")
+            project.set("id", task.project.id.__str__())
+            pname = ET.SubElement(project,"name")
+            pname.text = task.project.name
+            name = ET.SubElement(ta, "name")
+            name.text = task.name
+            description = ET.SubElement(ta,"description")
+            description.text = task.description
+            assignee = ET.SubElement(ta, 'assignee')
+            assignee.set("id", task.assignee.id.__str__())
+            username = ET.SubElement(assignee, 'username')
+            username.text = task.assignee.username
+            start_date = ET.SubElement(ta,"start_date")
+            start_date.text = task.start_date.__str__()
+            due_date = ET.SubElement(ta,"due_date")
+            due_date.text = task.due_date.__str__()
+            priority = ET.SubElement(ta,"priority")
+            priority.text = task.priority.__str__()
+            sta = ET.SubElement(ta,"status")
+            sta.set("id", task.status.id.__str__())
+            sname = ET.SubElement(sta, "name")
+            sname.text = task.status.name
+            modi = ET.SubElement(sta,"modified")
+            modi.text = task.modified.__str__()
 
     #Status
-    s = ET.SubElement(d, 'Status')
+    if datachoice == 'all' or datachoice == 'status':
+        s = ET.SubElement(d, 'Status')
 
-    for status in statuss:
-        sta = ET.SubElement(s,"status")
-        sta.set("id",status.id.__str__())
-        name = ET.SubElement(sta,"name")
-        name.text = status.name
+        for status in statuss:
+            sta = ET.SubElement(s,"status")
+            sta.set("id",status.id.__str__())
+            name = ET.SubElement(sta,"name")
+            name.text = status.name
 
     #Journal
-    j = ET.SubElement(d, 'Journal')
+    if datachoice == 'all' or datachoice == 'journal':
+        j = ET.SubElement(d, 'Journal')
 
-    for journal in journals:
-        jou = ET.SubElement(j,"journal")
-        jou.set("id", journal.id.__str__())
-        date = ET.SubElement(jou,"date")
-        date.text = journal.date.__str__()
-        entry = ET.SubElement(jou,"entry")
-        entry.text = journal.entry
-        author = ET.SubElement(jou,"author")
-        author.set("id", journal.author.id.__str__())
-        username = ET.SubElement(author, "username")
-        username.text = journal.author.username
-        task = ET.SubElement(jou,"task")
-        task.set("id", journal.task.id.__str__())
-        tname = ET.SubElement(task, "name")
-        tname.text = journal.task.name
+        for journal in journals:
+            jou = ET.SubElement(j,"journal")
+            jou.set("id", journal.id.__str__())
+            date = ET.SubElement(jou,"date")
+            date.text = journal.date.__str__()
+            entry = ET.SubElement(jou,"entry")
+            entry.text = journal.entry
+            author = ET.SubElement(jou,"author")
+            author.set("id", journal.author.id.__str__())
+            username = ET.SubElement(author, "username")
+            username.text = journal.author.username
+            task = ET.SubElement(jou,"task")
+            task.set("id", journal.task.id.__str__())
+            tname = ET.SubElement(task, "name")
+            tname.text = journal.task.name
 
 
     tree =  ET.ElementTree(d)
@@ -513,7 +540,7 @@ def download_data_xml(request):
 #
 ##
 @login_required(login_url='/accounts/login/')
-def download_data_json(request):
+def download_data_json(request, datachoice):
     users = User.objects.all()
     projects = Project.objects.all()
     tasks = Task.objects.all()
@@ -525,58 +552,64 @@ def download_data_json(request):
     data={}
 
     #Users
-    data['Users']=[]
-    for user in users:
-        data['Users'].append({
-            'username':user.username,
-            'first_name':user.first_name,
-            'last_name':user.last_name,
-            'email':user.email
-        })
+    if datachoice == 'all' or datachoice == 'users':
+        data['Users']=[]
+        for user in users:
+            data['Users'].append({
+                 'username':user.username,
+                 'first_name':user.first_name,
+                 'last_name':user.last_name,
+                 'email':user.email
+            })
 
     #Projects
-    data['Projects']=[]
-    for project in projects:
-        data['Projects'].append({
-            'name':project.name
-        })
-        mem=[]
-        for member in project.members.all():
-            mem.append(member.username)
-        data['Projects'].append({
-            'members':mem
-        })
+    if datachoice == 'all' or datachoice == 'projects':
+        data['Projects']=[]
+        for project in projects:
+            data['Projects'].append({
+                'name':project.name
+            })
+            mem=[]
+            for member in project.members.all():
+                mem.append(member.username)
+            data['Projects'].append({
+                'members':mem
+            })
 
     #Tasks
-    data['Tasks']=[]
-    for task in tasks:
-        data['Tasks'].append({
-            'project':task.project.name,
-            'name':task.name,
-            'description':task.description,
-            'assignee':task.assignee.username,
-            'start_date':task.start_date.__str__(),
-            'due_date':task.due_date.__str__(),
-            'priority':task.priority.__str__(),
-            'status':task.status.name
-        })
+    if datachoice == 'all' or datachoice == 'tasks':
+        data['Tasks']=[]
+        for task in tasks:
+            data['Tasks'].append({
+                 'project':task.project.name,
+                 'name':task.name,
+                 'description':task.description,
+                 'assignee':task.assignee.username,
+                 'start_date':task.start_date.__str__(),
+                 'due_date':task.due_date.__str__(),
+                 'priority':task.priority.__str__(),
+                 'status':task.status.name,
+                 'modified':task.modified.__str__()
+            })
 
     #Status
-    data['Status']=[]
-    for status in statuss:
-        data['Status'].append({
-            'name':status.name
-        })
+    if datachoice == 'all' or datachoice == 'status':
+        data['Status']=[]
+        for status in statuss:
+            data['Status'].append({
+                 'name':status.name
+            })
 
     #Journal
-    data['Journal']=[]
-    for journal in journals:
-        data['Journal'].append({
-            'date':journal.date.__str__(),
-            'entry':journal.entry,
-            'author':journal.author.username,
-            'task':journal.task.name
-        })
+    if datachoice == 'all' or datachoice == 'journals':
+        data['Journal']=[]
+        for journal in journals:
+            data['Journal'].append({
+                 'date':journal.date.__str__(),
+                 'entry':journal.entry,
+                 'author':journal.author.username,
+                 'task':journal.task.name
+            })
 
     json.dump(data,response)
     return response

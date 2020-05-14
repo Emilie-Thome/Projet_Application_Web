@@ -138,10 +138,59 @@
                             Export data
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{% url 'download_csv' %}">CSV</a>
-                            <a class="dropdown-item" href="{% url 'download_json' %}">JSON</a>
-                            <a class="dropdown-item" href="{% url 'download_xls' %}">XLS</a>
-                            <a class="dropdown-item" href="{% url 'download_xml' %}">XML</a>
+                            <div class="dropdown dropright">
+                                <a class="dropdown-toggle btn" href="#" id="csvdrop" data-toggle="dropdown">
+                                    CSV
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'download_csv' 'all'%}">all (not recommended in this format)</a>
+                                    <a class="dropdown-item" href="{% url 'download_csv' 'users'%}">users</a>
+                                    <a class="dropdown-item" href="{% url 'download_csv' 'projects'%}">projects</a>
+                                    <a class="dropdown-item" href="{% url 'download_csv' 'tasks'%}">tasks</a>
+                                    <a class="dropdown-item" href="{% url 'download_csv' 'status'%}">status</a>
+                                    <a class="dropdown-item" href="{% url 'download_csv' 'journals'%}">journal</a>
+                                </div>
+                            </div>
+                            <div class="dropdown dropright">
+                                <a class="dropdown-toggle btn" href="#" id="csvdrop" data-toggle="dropdown">
+                                    XLS
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'download_xls' 'all'%}">all</a>
+                                    <a class="dropdown-item" href="{% url 'download_xls' 'users'%}">users</a>
+                                    <a class="dropdown-item" href="{% url 'download_xls' 'projects'%}">projects</a>
+                                    <a class="dropdown-item" href="{% url 'download_xls' 'tasks'%}">tasks</a>
+                                    <a class="dropdown-item" href="{% url 'download_xls' 'status'%}">status</a>
+                                    <a class="dropdown-item" href="{% url 'download_xls' 'journals'%}">journal</a>
+                                </div>
+                            </div>
+                            <div class="dropdown dropright">
+                                <a class="dropdown-toggle btn" href="#" id="csvdrop" data-toggle="dropdown">
+                                    XML
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'download_xml' 'all'%}">all</a>
+                                    <a class="dropdown-item" href="{% url 'download_xml' 'users'%}">users</a>
+                                    <a class="dropdown-item" href="{% url 'download_xml' 'projects'%}">projects</a>
+                                    <a class="dropdown-item" href="{% url 'download_xml' 'tasks'%}">tasks</a>
+                                    <a class="dropdown-item" href="{% url 'download_xml' 'status'%}">status</a>
+                                    <a class="dropdown-item" href="{% url 'download_xml' 'journals'%}">journal</a>
+                                </div>
+                            </div>
+                            <div class="dropdown dropright">
+                                <a class="dropdown-toggle btn" href="#" id="csvdrop" data-toggle="dropdown">
+                                    JSON
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'download_json' 'all'%}">all</a>
+                                    <a class="dropdown-item" href="{% url 'download_json' 'users'%}">users</a>
+                                    <a class="dropdown-item" href="{% url 'download_json' 'projects'%}">projects</a>
+                                    <a class="dropdown-item" href="{% url 'download_json' 'tasks'%}">tasks</a>
+                                    <a class="dropdown-item" href="{% url 'download_json' 'status'%}">status</a>
+                                    <a class="dropdown-item" href="{% url 'download_json' 'journals'%}">journal</a>
+                                </div>
+                            </div>
+
                         </div>
                     </li>
                 </ul>
