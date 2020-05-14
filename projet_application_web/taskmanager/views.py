@@ -172,7 +172,9 @@ def edittask(request, id):
 def tasks(request):
     user = request.user
     tasks = Task.objects.filter(project__members__in=[user])
+    projects = Project.objects.filter(members=user)
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                      'projects': projects,
                                                          'user': user})
 
 ##
@@ -185,8 +187,10 @@ def tasks(request):
 def tasks_done(request):
     user = request.user
     tasks = Task.objects.filter(project__members__in=[user]).filter(status__name="Terminée")
+    projects = Project.objects.filter(members=user)
     done_only = True
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
+                                                      'projects': projects,
                                                          'user': user,
                                                       'done_only': done_only})
 

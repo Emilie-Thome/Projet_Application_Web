@@ -7,13 +7,14 @@
     <h1 class="display-2">
         <a href="{% url 'projects' %}" class="text-muted">My projects</a>/
 
-        {% if done_only %} <!-- On garde le même template pour l'affichage des tâches normales et des tâches terminées-->
-        <a href="{% url 'tasks' %}" class="text-muted">tasks</a>/
-        <a href="{% url 'tasks_done' %}" >tasks done</a>/
+        {% if done_only %}
+            <!-- On garde le même template pour l'affichage des tâches normales et des tâches terminées-->
+            <a href="{% url 'tasks' %}" class="text-muted">tasks</a>/
+            <a href="{% url 'tasks_done' %}">tasks done</a>/
 
         {% else %}
-        <a href="{% url 'tasks' %}">tasks</a>/
-        <a href="{% url 'tasks_done' %}" class="text-muted">tasks done</a>/
+            <a href="{% url 'tasks' %}">tasks</a>/
+            <a href="{% url 'tasks_done' %}" class="text-muted">tasks done</a>/
         {% endif %}
 
         <a href="{% url 'activities' %}" class="text-muted">activities</a>
@@ -24,17 +25,47 @@
 <!-- Content of the table -->
 {% block projects_table %}
 
-    {% for task in tasks %}
-        <tr>
-            <td>
-                <!-- Task With Link -->
-                <h4 class="task" style="display: inline"><a
-                        href="{% url 'task' task.id %}">{{ task }}</a> - </h4>
+    <!-- Project Tasks With Details And Edit Button In Table -->
+    <div class="row">
 
-                <!-- Assigned to -->
-                    <h6 class="assignee">{{ task.assignee }}</h6>
-            </td>
-        </tr>
-    {% endfor %}
+        <div class="col">
+            <table class="table" id="tasks-table">
+                <thead></thead>
+
+                {% for project in projects %}
+
+                    <thead>
+                    <tr>
+                        <th><h4 class="th">{{ project }}</h4></th>
+                        <th>Priorité</th>
+                        <th>Statut</th>
+                        <th>Assignée</th>
+                        <th>Due date</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for task in tasks %}
+
+                        {% if task.project == project %}
+
+                            <tr>
+                                <td><h4><a href="{% url 'task' task.id %}"
+                                           style="white-space: nowrap; width: 1%">{{ task }}</a></h4>
+                                </td>
+                                <td align="center"><h6 class="priority">{{ task.priority }}</h6></td>
+                                <td><h6 class="status">{{ task.status }}</h6></td>
+                                <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+                                <td>
+                                    <h4 class="date">{{ task.due_date }}</h4>
+                                </td>
+                            </tr>
+
+                        {% endif %}
+
+                    {% endfor %}
+                    </tbody>
+                {% endfor %}
 
 {% endblock %}
