@@ -37,10 +37,13 @@ class Task(models.Model):
     priority = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(5)])
     status = models.ForeignKey('Status', on_delete=models.CASCADE, verbose_name="Task status") # TODO it's not relevant to delete
                                                                     # a task because the status is deleted
+
+    modified = models.DateTimeField(default=timezone.now, verbose_name="Modified date")
+
     class Meta:
         verbose_name = "task"
         # Ordering rule for 'view.project'
-        ordering = ['priority', 'status', 'due_date']
+        ordering = ['priority', 'status', 'due_date', 'modified']
 
     def __str__(self):
         return self.name

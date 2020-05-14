@@ -13,6 +13,8 @@ urlpatterns = [
     path('download/json',views.download_data_json, name='download_json'),
     path('tasks', views.tasks, name='tasks'),
     path('tasks_done', views.tasks_done, name="tasks_done"),
+    path('activities', views.activities, name="activities"),
     path('newproject', views.newproject, name='newproject'),
     path('home', views.home, name="home"),
+
 ]

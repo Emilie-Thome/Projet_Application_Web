@@ -10,6 +10,18 @@
 <!-- Content -->
 {% block content %}
 
+    {% block projects_navigation %}
+
+        <!-- Projects -->
+        <h1 class="display-2">
+            <a href="{% url 'projects' %}">My projects</a>/
+            <a href="{% url 'tasks' %}" class="text-muted">tasks</a>/
+            <a href="{% url 'tasks_done' %}" class="text-muted">tasks done</a>/
+            <a href="{% url 'activities' %}" class="text-muted">activities</a>
+        </h1>
+
+    {% endblock %}
+
     <!-- Add Project -->
     <div class="row" style="padding: 0 0">
         <div class="col">

@@ -1,0 +1,57 @@
+{% extends "projects.html" %}
+
+{% block projects_navigation %}
+
+    <!-- Projects -->
+    <h1 class="display-2">
+        <a href="{% url 'projects' %}" class="text-muted">My projects</a>/
+        <a href="{% url 'tasks' %}" class="text-muted">tasks</a>/
+        <a href="{% url 'tasks_done' %}" class="text-muted">tasks done</a>/
+        <a href="{% url 'activities' %}">activities</a>
+    </h1>
+
+{% endblock %}
+
+{% block projects_table %}
+
+    <!-- Project Tasks With Details And Edit Button In Table -->
+    <div class="row">
+
+        <div class="col">
+            <table class="table" id="tasks-table">
+                <thead></thead>
+
+                {% for task in tasks %}
+                    <thead>
+                    <tr>
+                        <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+                        <th scope="col" class="col-sm-3"><h4 class="th">{{ task.project }}</h4></th>
+                        <th scope="col" class="col-sm-1"><h4 class="th"></h4></th>
+                        <th scope="col" class="col-sm-2"><h4 class="th">Assignee</h4></th>
+                        <th scope="col" class="col-sm-2"><h4 class="th">Modified</h4></th>
+                        <th scope="col" class="col-sm-3"><h4 class="th">Journal</h4></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-center"><h6 class="priority">{{ task.priority }}</h6></td>
+                        <td><h4><a href="{% url 'task' task.id %}"
+                                   style="white-space: nowrap; width: 1%">{{ task }}</a>
+                        </h4></td>
+                        <td class="text-center"><h6 class="status">{{ task.status }}</h6></td>
+                        <td><h5 class="assignee">{{ task.assignee }}</h5></td>
+                        <td>
+                            <h4 class="date">{{ task.modified.time }} {{ task.modified.day }}/{{ task.modified.month }}/{{ task.modified.year }}</h4>
+                        </td>
+                        {% for journal in journals %}
+                            {% if journal.task.id == task.id and journal.date > task.modified %}
+                                <!-- Seulement un journal de chaque tâche a une date supérieure à celle de modification de la tâche -->
+                                <td><h4 class="journal-entry">{{ journal.author }}: <br>{{ journal.entry }}</h4></td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+
+                {% endfor %}
+
+{% endblock %}

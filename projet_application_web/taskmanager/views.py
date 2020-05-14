@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .models import Project, Task, Journal, Status
 from .form import TaskForm, JournalForm, ProjectForm
@@ -117,7 +118,7 @@ def project(request, id):
 def task(request, id):
     user = request.user
     task = get_object_or_404(Task, id=id)
-    journals = Journal.objects.filter(task=task)
+    journals = Journal.objects.filter(task=task).order_by('-date')
 
     permission(user, task.project)  # Checks if the user is a member of the project
 
@@ -125,10 +126,17 @@ def task(request, id):
     if request.method == 'POST':
         form = JournalForm(request.POST)
         if form.is_valid():
-            journal = form.save(commit=False)  # Do not save directly in the DB
-            journal.task = task  # The project is not in the form because it is already defined
+
+            task.modified = timezone.now() #On modifie l'attribut temporel modified
+            task.save()
+
+            journal = form.save(commit=False) # Do not save directly in the DB
+            journal.task = task # The project is not in the form because it is already defined
+
             journal.author = user
+            journal.date = timezone.now()
             journal.save()
+
             return redirect('task', id=task.id)
     else:
         form = JournalForm()
@@ -585,9 +593,9 @@ def download_data_json(request):
 def tasks(request):
     user = request.user
     tasks = Task.objects.filter(project__members__in=[user])
+    projects = Project.objects.filter(members=user)
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
-                                                      'user': user})
-
+                                                      'projects': projects, 'user': user})
 
 ##
 # Display every done task of the user with the
@@ -599,12 +607,21 @@ def tasks(request):
 def tasks_done(request):
     user = request.user
     tasks = Task.objects.filter(project__members__in=[user]).filter(status__name="Terminée")
+    projects = Project.objects.filter(members=user)
     done_only = True
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
-                                                      'user': user,
+                                                      'projects': projects,
+                                                         'user': user,
                                                       'done_only': done_only})
 
-
+def activities(request):
+    user = request.user
+    tasks = Task.objects.filter(project__members__in=[user]).order_by('-modified')
+    journals = Journal.objects.filter(task__in=tasks).order_by('-date')
+    return render(request, 'taskmanager/activities.html', {'tasks': tasks,
+                                                      'user': user,
+                                                           'journals': journals})
+  
 ##
 # Add a project
 #
