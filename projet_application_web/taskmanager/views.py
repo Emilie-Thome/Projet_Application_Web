@@ -595,9 +595,7 @@ def tasks(request):
     tasks = Task.objects.filter(project__members__in=[user])
     projects = Project.objects.filter(members=user)
     return render(request, 'taskmanager/tasks.html', {'tasks': tasks,
-
-                                                      'projects': projects,
-                                                         'user': user})
+                                                      'projects': projects, 'user': user})
 
 ##
 # Display every done task of the user with the
