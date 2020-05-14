@@ -1,15 +1,5 @@
 $(document).ready(function() {
 
-    // Function to display filters
-    function displayFilters() {
-      var x = document.getElementById("filters");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "none";
-      }
-    }
-
     // Multiselect with checkbox dropdown
     $('#statuss').multiselect({
         buttonWidth: 160,
