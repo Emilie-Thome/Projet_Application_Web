@@ -43,7 +43,7 @@ class Task(models.Model):
     class Meta:
         verbose_name = "task"
         # Ordering rule for 'view.project'
-        ordering = ['priority', 'status', 'due_date', 'modified']
+        ordering = ['project', 'priority', 'status', 'due_date', 'modified']
 
     def __str__(self):
         return self.name
