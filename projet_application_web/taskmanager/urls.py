@@ -10,4 +10,5 @@ urlpatterns = [
     path('tasks', views.tasks, name='tasks'),
     path('tasks_done', views.tasks_done, name="tasks_done"),
     path('newproject', views.newproject, name='newproject'),
+    path('home', views.home, name="home"),
 ]

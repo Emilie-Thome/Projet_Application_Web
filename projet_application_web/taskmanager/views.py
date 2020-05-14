@@ -208,3 +208,7 @@ def newproject(request):
 
     return render(request, 'taskmanager/newproject.html', {'form': form,
                                                            'user': user})
+
+
+def home(request):
+    return render(request, 'taskmanager/home.html', {'user': request.user})
