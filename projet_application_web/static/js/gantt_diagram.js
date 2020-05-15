@@ -18,8 +18,8 @@ for (var info of infos_gantt) {
     let end = info["end"];
     gantt_options.series[0].data.push({
         name: info["name"],
-        start: Date.UTC(start[0], start[1], start[2]),
-        end: Date.UTC(end[0], end[1], end[2]),
+        start: Date.UTC(start[0], start[1]-1, start[2]),
+        end: Date.UTC(end[0], end[1]-1, end[2]),
     })
 }
 
